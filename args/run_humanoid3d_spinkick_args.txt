@@ -21,4 +21,4 @@
 --agent_files data/agents/ct_agent_humanoid_ppo.txt
 --train_agents false
 
---model_files data/policies/humanoid3d/humanoid3d_spinkick.ckpt
+--model_files output/agent0_model.ckpt
