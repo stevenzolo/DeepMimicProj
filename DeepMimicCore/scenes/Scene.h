@@ -38,7 +38,7 @@ public:
 	virtual bool CheckValidEpisode() const;
 
 	virtual std::string GetName() const = 0;
-
+	cTimer mTimer;
 protected:
 
 	cRand mRand;
@@ -47,7 +47,6 @@ protected:
 
 	std::shared_ptr<cArgParser> mArgParser;
 	cTimer::tParams mTimerParams;
-	cTimer mTimer;
 
 	cScene();
 

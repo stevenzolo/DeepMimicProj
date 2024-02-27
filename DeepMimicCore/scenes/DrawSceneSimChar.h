@@ -91,6 +91,7 @@ protected:
 	virtual void DrawTrace() const;
 
 	virtual void DrawPerturbs() const;
+	virtual void DrawAxis() const;
 
 	virtual void DrawGround() const;
 	virtual void DrawCharacters() const;

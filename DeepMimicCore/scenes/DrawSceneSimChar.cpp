@@ -1,3 +1,5 @@
+#pragma once
+#include <iostream>
 #include "DrawSceneSimChar.h"
 
 #include "sim/SimBox.h"
@@ -9,6 +11,7 @@
 #include "render/DrawObj.h"
 #include "render/DrawWorld.h"
 #include "render/DrawPerturb.h"
+#include "util/Timer.h"  //George set a boolean to decide if print time
 
 const tVector gCamFocus0 = tVector(0, 0.75, 0, 0);
 
@@ -17,6 +20,8 @@ const size_t gInitGroundUpdateCount = std::numeric_limits<size_t>::max();
 
 const std::string gOutputCharFile = "output/char_state.txt";
 
+bool gRecording = false;
+int recordCount = 0;
 cDrawSceneSimChar::cDrawSceneSimChar()
 {
 	mEnableTrace = false;
@@ -121,6 +126,26 @@ void cDrawSceneSimChar::Keyboard(unsigned char key, double device_x, double devi
 	case 'y':
 		ToggleTrace();
 		break;
+	case 'T':
+		mScene->mTimer.TogglePrintTime();
+		break;
+	case 'R':
+		gRecording = !gRecording;
+		if (gRecording)
+		{
+			std::cout << "clear poses data" << std::endl;
+			recordCount = 0;
+			const auto& character = mScene->GetCharacter();
+			character->poses.clear();
+			std::cout << "start recording" << std::endl;
+		}
+		else
+		{
+			std::cout << "writing results" << std::endl;
+			OutputCharState(GetOutputCharFile());
+			std::cout << "end recording" << std::endl;
+		}
+		break;
 	default:
 		break;
 	}
@@ -161,6 +186,19 @@ void cDrawSceneSimChar::UpdateScene(double time_elapsed)
 {
 	ApplyUIForce(time_elapsed);
 	mScene->Update(time_elapsed);
+	// George add recording, add poses to List<vector<pose> poses>
+	if (gRecording)
+	{
+		if (recordCount % 10 == 0)
+		{
+			std::cout << "recording.." << std::endl;
+			const auto& character = mScene->GetCharacter();
+			Eigen::VectorXd pose = character->GetPose();
+			character->poses.push_back(pose);
+		}
+		recordCount += 1;
+		std::cout << "recordCount : " << recordCount << std::endl;
+	}
 }
 
 void cDrawSceneSimChar::ResetScene()
@@ -413,6 +451,12 @@ void cDrawSceneSimChar::DrawObj(int obj_id) const
 	}
 }
 
+void cDrawSceneSimChar::DrawAxis() const
+{
+	const auto& world = mScene->GetWorld();
+	cDrawWorld::DrawAxis(*world.get());
+}
+
 void cDrawSceneSimChar::DrawMisc() const
 {
 	if (mEnableTrace)
@@ -420,6 +464,7 @@ void cDrawSceneSimChar::DrawMisc() const
 		DrawTrace();
 	}
 	DrawPerturbs();
+	DrawAxis();
 }
 
 void cDrawSceneSimChar::DrawCoM() const

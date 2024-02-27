@@ -143,13 +143,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\..\..\library\Bullet3\src;..\..\..\library\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(PYTHON_INCLUDE);D:\GitHub\DeepMimicDependency\glew-2.2.0-compiled\include;D:\GitHub\DeepMimicDependency\freeglut3\include;D:\GitHub\DeepMimicDependency\eigen-3.3.7;D:\GitHub\DeepMimicDependency\bullet3-2.87\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\library\Bullet3\build3\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\GitHub\DeepMimicDependency\glew-2.2.0-compiled\lib\Debug\x64;D:\GitHub\DeepMimicDependency\freeglut3\lib\Debug;D:\GitHub\DeepMimicDependency\bullet3-2.87\bin;$(PYTHON_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -301,6 +301,14 @@
     <ClCompile Include="sim\AgentRegistry.cpp" />
     <ClCompile Include="sim\CharController.cpp" />
     <ClCompile Include="sim\ExpPDController.cpp" />
+    <ClCompile Include="sim\GroundConveyor3D.cpp" />
+    <ClCompile Include="sim\GroundDynamicObstacles3D.cpp" />
+    <ClCompile Include="sim\GroundHills3D.cpp" />
+    <ClCompile Include="sim\GroundObstacles3D.cpp" />
+    <ClCompile Include="sim\GroundObstaclesDynamicCharacters3D.cpp" />
+    <ClCompile Include="sim\GroundTrail3D.cpp" />
+    <ClCompile Include="sim\GroundVar2D.cpp" />
+    <ClCompile Include="sim\GroundVar3D.cpp" />
     <ClCompile Include="sim\ObjTracer.cpp" />
     <ClCompile Include="sim\ContactManager.cpp" />
     <ClCompile Include="sim\Controller.cpp" />
@@ -334,6 +342,8 @@
     <ClCompile Include="sim\SpAlg.cpp" />
     <ClCompile Include="sim\DeepMimicCharController.cpp" />
     <ClCompile Include="sim\CtrlBuilder.cpp" />
+    <ClCompile Include="sim\TerrainGen2D.cpp" />
+    <ClCompile Include="sim\TerrainGen3D.cpp" />
     <ClCompile Include="sim\World.cpp" />
     <ClCompile Include="DeepMimicCore.cpp" />
     <ClCompile Include="util\Annealer.cpp" />
@@ -346,6 +356,7 @@
     <ClCompile Include="util\json\json_value.cpp" />
     <ClCompile Include="util\json\json_writer.cpp" />
     <ClCompile Include="util\MathUtil.cpp" />
+    <ClCompile Include="util\PerlinNoise.cpp" />
     <ClCompile Include="util\Rand.cpp" />
     <ClCompile Include="util\Timer.cpp" />
     <ClCompile Include="util\Trajectory.cpp" />
@@ -411,6 +422,14 @@
     <ClInclude Include="sim\AgentRegistry.h" />
     <ClInclude Include="sim\CharController.h" />
     <ClInclude Include="sim\ExpPDController.h" />
+    <ClInclude Include="sim\GroundConveyor3D.h" />
+    <ClInclude Include="sim\GroundDynamicObstacles3D.h" />
+    <ClInclude Include="sim\GroundHills3D.h" />
+    <ClInclude Include="sim\GroundObstacles3D.h" />
+    <ClInclude Include="sim\GroundObstaclesDynamicCharacters3D.h" />
+    <ClInclude Include="sim\GroundTrail3D.h" />
+    <ClInclude Include="sim\GroundVar2D.h" />
+    <ClInclude Include="sim\GroundVar3D.h" />
     <ClInclude Include="sim\ObjTracer.h" />
     <ClInclude Include="sim\ContactManager.h" />
     <ClInclude Include="sim\Controller.h" />
@@ -444,6 +463,8 @@
     <ClInclude Include="sim\SpAlg.h" />
     <ClInclude Include="sim\DeepMimicCharController.h" />
     <ClInclude Include="sim\CtrlBuilder.h" />
+    <ClInclude Include="sim\TerrainGen2D.h" />
+    <ClInclude Include="sim\TerrainGen3D.h" />
     <ClInclude Include="sim\World.h" />
     <ClInclude Include="DeepMimicCore.h" />
     <ClInclude Include="util\Annealer.h" />
@@ -467,6 +488,7 @@
     <ClInclude Include="util\json\version.h" />
     <ClInclude Include="util\json\writer.h" />
     <ClInclude Include="util\MathUtil.h" />
+    <ClInclude Include="util\PerlinNoise.h" />
     <ClInclude Include="util\Rand.h" />
     <ClInclude Include="util\Timer.h" />
     <ClInclude Include="util\Trajectory.h" />

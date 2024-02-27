@@ -43,6 +43,13 @@ std::string cJsonUtil::BuildVectorJson(const Eigen::VectorXd& vec)
 	return json;
 }
 
+std::string cJsonUtil::BuildVectorJson2(const Eigen::VectorXd& vec)
+{
+	std::string json = BuildVectorString(vec);
+	json = "[0.01666," + json + "]";
+	return json;
+}
+
 std::string cJsonUtil::BuildVectorString(const Eigen::VectorXd& vec)
 {
 	std::string str = "";

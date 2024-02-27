@@ -14,7 +14,7 @@
     <Name>DeepMimic</Name>
     <RootNamespace>pyTerrainRL</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>--arg_file args/run_humanoid3d_spinkick_args.txt</CommandLineArguments>
+    <CommandLineArguments>--arg_file args/run_humanoid3d_roll_args.txt</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>CondaEnv|CondaEnv|deepmimic</InterpreterId>

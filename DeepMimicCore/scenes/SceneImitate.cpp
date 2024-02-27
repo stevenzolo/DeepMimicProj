@@ -101,7 +101,31 @@ double cSceneImitate::CalcRewardImitate(const cSimCharacter& sim_char, const cKi
 	root_pos0[1] -= root_ground_h0;
 	root_pos1[1] -= root_ground_h1;
 	double root_pos_err = (root_pos0 - root_pos1).squaredNorm();
-	
+
+	// get height map
+//	int map = 0;
+//	int right_foot_id = 5;
+//	int left_foot_id = 11;
+//	tVector curr_pos = root_pos0;
+//	double curr_height = mGround->SampleHeight(curr_pos);
+//	curr_pos[0] = root_pos0[0] - 2;
+//	curr_pos[2] = curr_pos[2] - 2;
+//	for (int i = 0; i < 41; i++)
+//	{
+//        curr_pos[0] = curr_pos[0] + 0.1;
+//        curr_height = mGround->SampleHeight(curr_pos);
+//        map = map + 1;
+//        printf("point %d at (%d, -20) with height: %.5f\n", map, i-20, curr_height);
+//	    for (int j = 1; j < 41; j++)
+//	    {
+//            curr_pos[2] = curr_pos[2] + 0.1;
+//            curr_height = mGround->SampleHeight(curr_pos);
+//            map = map + 1;
+//            printf("point %d at (%d, %d) with height: %.5f\n", map, i-20, j-20, curr_height);
+//        }
+//	}
+	// end
+
 	double root_rot_err = cMathUtil::QuatDiffTheta(root_rot0, root_rot1);
 	root_rot_err *= root_rot_err;
 

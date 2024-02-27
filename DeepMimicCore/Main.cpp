@@ -122,7 +122,7 @@ void Update(double time_elapsed)
 		}
 
 		gCore->Update(timestep);
-
+		//george modify END_EPISODE
 		if (gCore->IsRLScene())
 		{
 			bool end_episode = gCore->IsEpisodeEnd();
@@ -337,7 +337,11 @@ void InitFrameBuffers(void)
 void InitDraw(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	
+
+	glutInitContextVersion(3, 2);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+	glutInitContextProfile(GLUT_CORE_PROFILE);
+
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(gWinWidth, gWinHeight);
 	glutCreateWindow("DeepMimic");
@@ -365,6 +369,7 @@ void DrawMainLoop()
 
 int main(int argc, char** argv)
 {
+	std::cout << "start.." << std::endl;
 	FormatArgs(argc, argv, gArgs);
 
 	InitDraw(argc, argv);
