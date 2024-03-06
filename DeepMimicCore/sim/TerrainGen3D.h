@@ -85,20 +85,6 @@ public:
 			const Eigen::VectorXd& params, cRand& rand,
 			std::vector<float>& out_data, std::vector<int>& out_flags);
 
-	static void OverlayCliff(
-		const tVector& bound_min, const tVector& bound_max,
-		const tVector& overlay_bound_min, const tVector& overlay_bound_max,
-		double spacing_x, double spacing_z,
-		const Eigen::VectorXd& params, cRand& rand,
-		std::vector<float>& out_data, std::vector<int>& out_flags);
-
-	static void OverlayStairs(
-		const tVector& bound_min, const tVector& bound_max, 
-		const tVector& overlay_bound_min, const tVector& overlay_bound_max,
-		double spacing_x, double spacing_z,
-		const Eigen::VectorXd& params, cRand& rand,
-		std::vector<float>& out_data, std::vector<int>& out_flags);
-
 protected:
 
 	static void AddFlat(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
