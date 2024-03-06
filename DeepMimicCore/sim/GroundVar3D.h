@@ -78,6 +78,8 @@ protected:
 
 	tSlab mSlabs[gNumSlabs];
 	int mSlabOrder[gNumSlabs];
+	// @Yan, declare variable to save parameters of overlay terrain params
+	static Json::Value mSlabOverlayTerrains[gNumSlabs];
 
 	virtual void ResetParams();
 	virtual int GetBlendParamSize() const;
@@ -87,8 +89,8 @@ protected:
 
 	virtual tSlab& GetSlab(int s);
 	virtual void BuildSlab(int s, const tVector& bound_min, const tVector& bound_max);
-	virtual void BuildSlabHeighData(const tVector& bound_min, const tVector& bound_max, 
-									std::vector<float>& out_data, std::vector<int>& out_flags);
+	virtual void BuildSlabHeighData(int s, const tVector& bound_min, const tVector& bound_max,
+									std::vector<float>& out_data, std::vector<int>& out_flags);	// @Yan, add "s"
 	virtual void GetBounds(tVector& bound_min, tVector& bound_max) const;
 
 	virtual void ClearSlabData(int s);
