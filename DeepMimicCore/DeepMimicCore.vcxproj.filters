@@ -386,6 +386,9 @@
     <ClCompile Include="util\PerlinNoise.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
+    <ClCompile Include="sim\OverlayTerrainGen3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="util\CircularBuffer.h">
@@ -778,6 +781,7 @@
     <ClInclude Include="util\PerlinNoise.h">
       <Filter>Source Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="sim\OverlayTerrainGen3D.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DeepMimicCore.i" />

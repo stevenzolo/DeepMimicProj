@@ -2,6 +2,7 @@
 
 #include "sim/Ground.h"
 #include "sim/TerrainGen3D.h"
+#include "sim/OverlayTerrainGen3D.h"
 
 class cGroundVar3D : public cGround
 {
@@ -60,6 +61,7 @@ public:
 	virtual void GetRes(int& out_x_res, int& out_z_res) const;
 
 	virtual void SetTerrainFunc(cTerrainGen3D::tTerrainFunc func);
+	virtual void SetOverTerrainFunc(cOverlayTerrainGen3D::tOverTerrainFunc func);
 	virtual bool HasSimBody() const;
 
 	virtual int GetSlabID(int s) const;
@@ -73,8 +75,9 @@ public:
 
 protected:
 	static const int gNumSlabs = 4;
-
+	
 	cTerrainGen3D::tTerrainFunc mTerrainFunc;
+	cOverlayTerrainGen3D::tOverTerrainFunc mOverTerrainFunc;
 
 	tSlab mSlabs[gNumSlabs];
 	int mSlabOrder[gNumSlabs];

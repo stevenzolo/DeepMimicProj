@@ -253,6 +253,7 @@
     <ClCompile Include="Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Swig|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="sim\OverlayTerrainGen3D.cpp" />
     <ClCompile Include="render\Camera.cpp" />
     <ClCompile Include="render\DrawCharacter.cpp" />
     <ClCompile Include="render\DrawGround.cpp" />
@@ -371,6 +372,7 @@
     <ClInclude Include="anim\Motion.h" />
     <ClInclude Include="anim\MotionController.h" />
     <ClInclude Include="anim\Shape.h" />
+    <ClInclude Include="sim\OverlayTerrainGen3D.h" />
     <ClInclude Include="render\Camera.h" />
     <ClInclude Include="render\DrawCharacter.h" />
     <ClInclude Include="render\DrawGround.h" />

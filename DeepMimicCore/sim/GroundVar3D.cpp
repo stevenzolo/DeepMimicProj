@@ -4,6 +4,7 @@
 #include <iostream>
 #include "util/FileUtil.h"
 #include "sim/TerrainGen3D.h"
+#include "sim/OverlayTerrainGen3D.h"
 
 Json::Value cGroundVar3D::mSlabOverlayTerrains[gNumSlabs] = {};
 // @Yan
@@ -21,6 +22,7 @@ bool cGroundVar3D::ParseParamsJson(const Json::Value& json, Eigen::VectorXd& out
 		}
 	}
 	// original, load blend params
+	cOverlayTerrainGen3D::LoadParams(json);
 	cTerrainGen3D::LoadParams(json, out_params);
 	return true;
 }
@@ -244,10 +246,15 @@ void cGroundVar3D::GetRes(int& out_x_res, int& out_z_res) const
 	out_z_res = GetSlab(0).mResZ + GetSlab(2).mResZ - 1;
 }
 
-
 void cGroundVar3D::SetTerrainFunc(cTerrainGen3D::tTerrainFunc func)
 {
 	mTerrainFunc = func;
+}
+
+// added @Yan
+void cGroundVar3D::SetOverTerrainFunc(cOverlayTerrainGen3D::tOverTerrainFunc func)
+{
+	mOverTerrainFunc = func;
 }
 
 bool cGroundVar3D::HasSimBody() const
@@ -434,7 +441,22 @@ void cGroundVar3D::BuildSlabHeighData(int s, const tVector& bound_min, const tVe
 	SetTerrainFunc(cTerrainGen3D::BuildFlat);	// BuildFlat as base
 	(*mTerrainFunc)(bound_min, bound_max - bound_min, GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
 
-	Json::Value terrain_root = mSlabOverlayTerrains[s];
+	// test start 
+	if (s == 3)
+	{
+		tVector overlay_bound_min = tVector::Zero();
+		tVector overlay_bound_max = tVector::Zero();
+		overlay_bound_min[0] = 3;
+		overlay_bound_min[2] = 3;
+		overlay_bound_max[0] = 16;
+		overlay_bound_max[2] = 20;
+		SetOverTerrainFunc(cOverlayTerrainGen3D::oBuildSlopeStair);
+		(*mOverTerrainFunc)(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			GetVertSpacingX(), GetVertSpacingZ(), mRand, out_data, out_flags);
+	}
+	// test end
+
+	/*Json::Value terrain_root = mSlabOverlayTerrains[s];
 
 	for (const std::string& terrain_func_key : terrain_root.getMemberNames())
 	{
@@ -451,13 +473,11 @@ void cGroundVar3D::BuildSlabHeighData(int s, const tVector& bound_min, const tVe
 
 			if (terrain_func_key == "Cliff")
 			{
-				SetTerrainFunc(cTerrainGen3D::BuildCliff);
 				cTerrainGen3D::OverlayCliff(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
 					GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
 			}
 			else if (terrain_func_key == "Stairs")
 			{
-				SetTerrainFunc(cTerrainGen3D::BuildStairs);
 				cTerrainGen3D::OverlayStairs(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
 					GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
 			}
@@ -467,7 +487,7 @@ void cGroundVar3D::BuildSlabHeighData(int s, const tVector& bound_min, const tVe
 				assert(false);
 			}
 		}
-	}
+	}*/
 	
 	// original
 	//(*mTerrainFunc)(bound_min, bound_max - bound_min, GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
