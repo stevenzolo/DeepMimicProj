@@ -178,49 +178,6 @@ void cTerrainGen3D::BuildStairs(const tVector& origin, const tVector& ground_siz
 	return AddStairs(origin, start_coord, ground_size, spacing_x, spacing_z, spacing_min, spacing_max, step_h_min, step_h_max,  out_res, rand, out_data, out_flags);
 }
 
-// added by @Yan
-void cTerrainGen3D::OverlayCliff(
-	const tVector& global_bound_min, const tVector& global_bound_max,
-	const tVector& overlay_bound_min, const tVector& overlay_bound_max,
-	double spacing_x, double spacing_z, const Eigen::VectorXd& params, cRand& rand,
-	std::vector<float>& out_data, std::vector<int>& out_flags)
-{
-	tVector global_ground_size = global_bound_max - global_bound_min;
-	Eigen::Vector2i start_coord = Eigen::Vector2i::Zero();
-	start_coord[0] = CalcResX(std::abs(overlay_bound_min[0] - global_bound_min[0]), spacing_x);
-	start_coord[1] = CalcResZ(std::abs(overlay_bound_min[2] - global_bound_min[2]), spacing_z);
-	Eigen::Vector2i out_res = Eigen::Vector2i::Zero();
-	out_res[0] = CalcResX(global_ground_size[0], spacing_x);
-	out_res[1] = CalcResZ(global_ground_size[2], spacing_z);
-
-	tVector overlay_ground_size = overlay_bound_max - overlay_bound_min;
-	return AddCliff(overlay_bound_min, start_coord, overlay_ground_size, spacing_x, spacing_z, out_res, out_data, out_flags);
-}
-
-// added by @Yan
-void cTerrainGen3D::OverlayStairs(
-	const tVector& global_bound_min, const tVector& global_bound_max, 
-	const tVector& overlay_bound_min, const tVector& overlay_bound_max,
-	double spacing_x, double spacing_z, const Eigen::VectorXd& params, cRand& rand,
-	std::vector<float>& out_data, std::vector<int>& out_flags)
-{
-	double spacing_min = params[eParamsStepSpacingMin];
-	double spacing_max = params[eParamsStepSpacingMax];
-	double step_h_min = params[eParamsStepHeightMin];
-	double step_h_max = params[eParamsStepHeightMax];
-
-	tVector global_ground_size = global_bound_max - global_bound_min;
-	Eigen::Vector2i start_coord = Eigen::Vector2i::Zero();
-	start_coord[0] = CalcResX(std::abs(overlay_bound_min[0] - global_bound_min[0]), spacing_x);
-	start_coord[1] = CalcResZ(std::abs(overlay_bound_min[2] - global_bound_min[2]), spacing_z);
-	Eigen::Vector2i out_res = Eigen::Vector2i::Zero();
-	out_res[0] = CalcResX(global_ground_size[0], spacing_x);
-	out_res[1] = CalcResZ(global_ground_size[2], spacing_z);
-
-	tVector overlay_ground_size = overlay_bound_max - overlay_bound_min;
-	return AddStairs(overlay_bound_min, start_coord, overlay_ground_size, spacing_x, spacing_z, spacing_min, spacing_max, step_h_min, step_h_max, out_res, rand, out_data, out_flags);
-}
-
 
 void cTerrainGen3D::AddFlat(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
 						const Eigen::Vector2i& out_res, std::vector<float>& out_data, std::vector<int>& out_flags)

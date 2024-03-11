@@ -438,26 +438,55 @@ void cGroundVar3D::BuildSlab(int s, const tVector& bound_min, const tVector& bou
 void cGroundVar3D::BuildSlabHeighData(int s, const tVector& bound_min, const tVector& bound_max, 
 										std::vector<float>& out_data, std::vector<int>& out_flags)
 {
-	SetTerrainFunc(cTerrainGen3D::BuildFlat);	// BuildFlat as base
-	(*mTerrainFunc)(bound_min, bound_max - bound_min, GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
+	// test
+	//SetTerrainFunc(cTerrainGen3D::BuildFlat);	// BuildFlat as base
+	/*(*mTerrainFunc)(bound_min, bound_max - bound_min, GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
 
-	// test start 
-	if (s == 3)
+	tVector overlay_bound_min = tVector::Zero();
+	tVector overlay_bound_max = tVector::Zero();
+	switch (s)
 	{
-		tVector overlay_bound_min = tVector::Zero();
-		tVector overlay_bound_max = tVector::Zero();
+	case 0:
+		overlay_bound_min[0] = -10;
+		overlay_bound_min[2] = -10;
+		overlay_bound_max[0] = -3;
+		overlay_bound_max[2] = -4;
+		SetOverTerrainFunc(cOverlayTerrainGen3D::oBuildGaps);
+		(*mOverTerrainFunc)(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			GetVertSpacingX(), GetVertSpacingZ(), mRand, out_data, out_flags);
+		break;
+	case 1:
 		overlay_bound_min[0] = 3;
+		overlay_bound_min[2] = -10;
+		overlay_bound_max[0] = 12;
+		overlay_bound_max[2] = -5;
+		SetOverTerrainFunc(cOverlayTerrainGen3D::oBuildPit);
+		(*mOverTerrainFunc)(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			GetVertSpacingX(), GetVertSpacingZ(), mRand, out_data, out_flags);
+		break;
+	case 2:
+		overlay_bound_min[0] = -12;
 		overlay_bound_min[2] = 3;
-		overlay_bound_max[0] = 16;
-		overlay_bound_max[2] = 20;
+		overlay_bound_max[0] = -6;
+		overlay_bound_max[2] = 9;
 		SetOverTerrainFunc(cOverlayTerrainGen3D::oBuildSlopeStair);
 		(*mOverTerrainFunc)(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
 			GetVertSpacingX(), GetVertSpacingZ(), mRand, out_data, out_flags);
-	}
-	// test end
-
+		break;
+	case 3:
+		overlay_bound_min[0] = 3;
+		overlay_bound_min[2] = 3;
+		overlay_bound_max[0] = 9;
+		overlay_bound_max[2] = 10;
+		SetOverTerrainFunc(cOverlayTerrainGen3D::oBuildStairSlope);
+		(*mOverTerrainFunc)(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			GetVertSpacingX(), GetVertSpacingZ(), mRand, out_data, out_flags);
+		break;
+	default:
+		break;
+	}*/
+	
 	/*Json::Value terrain_root = mSlabOverlayTerrains[s];
-
 	for (const std::string& terrain_func_key : terrain_root.getMemberNames())
 	{
 		int overlay_num = terrain_root[terrain_func_key].size();
@@ -470,27 +499,11 @@ void cGroundVar3D::BuildSlabHeighData(int s, const tVector& bound_min, const tVe
 			overlay_bound_min[2] = overlay_params_arr[1].asDouble();
 			overlay_bound_max[0] = overlay_params_arr[2].asDouble();
 			overlay_bound_max[2] = overlay_params_arr[3].asDouble();
-
-			if (terrain_func_key == "Cliff")
-			{
-				cTerrainGen3D::OverlayCliff(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
-					GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
-			}
-			else if (terrain_func_key == "Stairs")
-			{
-				cTerrainGen3D::OverlayStairs(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
-					GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
-			}
-			else
-			{
-				std::cout << "No overlay support for this terrain." << std::endl;
-				assert(false);
-			}
 		}
 	}*/
 	
 	// original
-	//(*mTerrainFunc)(bound_min, bound_max - bound_min, GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
+	(*mTerrainFunc)(bound_min, bound_max - bound_min, GetVertSpacingX(), GetVertSpacingZ(), mBlendParams, mRand, out_data, out_flags);
 }
 
 void cGroundVar3D::GetBounds(tVector& bound_min, tVector& bound_max) const
