@@ -38,6 +38,71 @@ def fc_net(input, layers_sizes, activation, reuse=None, flatten=False): # build 
 
     return curr_tf
 
+# added by Yifan: neural network with cnn, input size should be 1250
+def cnn_fc_net(input, layers_sizes, activation, reuse=None, flatten=False): # build fully connected network
+    print('cnn_fc_net is built')
+
+    curr_tf = input
+
+    # added by Yifan: enable height map
+    print('curr_tf at the beginning: ', curr_tf)
+    curr_state = curr_tf[:, 0:226]
+    print('curr_state: ', curr_state)
+    curr_map = curr_tf[:, 226:]
+    print('curr_map: ', curr_map)
+    curr_map = tf.reshape(curr_map, [-1, 32, 32, 1])
+    curr_map = height_map_net(curr_map)
+    curr_map = tf.squeeze(curr_map, [1, 2])
+    curr_tf = tf.concat([curr_state, curr_map], axis=-1)
+    print('curr_tf before fc: ', curr_tf)
+
+    for i, size in enumerate(layers_sizes):
+        with tf.variable_scope(str(i), reuse=reuse):
+            curr_tf = tf.layers.dense(inputs=curr_tf,
+                                    units=size,
+                                    kernel_initializer=xavier_initializer,
+                                    activation = activation if i < len(layers_sizes)-1 else None)
+    if flatten:
+        assert layers_sizes[-1] == 1
+        curr_tf = tf.reshape(curr_tf, [-1])
+
+    return curr_tf
+
+def height_map_net(height_map):
+    conv1 = tf.layers.conv2d(
+        inputs=height_map,
+        filters=16,
+        kernel_size=8,
+        strides=2,
+        padding='valid',
+        activation=tf.nn.relu
+    )
+
+    conv2 = tf.layers.conv2d(
+        inputs=conv1,
+        filters=32,
+        kernel_size=4,
+        strides=3,
+        padding='valid',
+        activation=tf.nn.relu
+    )
+
+    conv3 = tf.layers.conv2d(
+        inputs=conv2,
+        filters=32,
+        kernel_size=4,
+        strides=1,
+        padding='valid',
+        activation=tf.nn.relu
+    )
+
+    output = tf.layers.dense(inputs=conv3,
+                             units=64,
+                             kernel_initializer=xavier_initializer,
+                             activation=tf.nn.relu)
+
+    return output
+
 def copy(sess, src, dst):
     assert len(src) == len(dst)
     sess.run(list(map(lambda v: v[1].assign(v[0]), zip(src, dst))))

@@ -3,6 +3,7 @@ from env.env import Env
 from DeepMimicCore import DeepMimicCore
 from env.action_space import ActionSpace
 
+
 class DeepMimicEnv(Env):
     def __init__(self, args, enable_draw):
         super().__init__(args, enable_draw)
@@ -76,19 +77,19 @@ class DeepMimicEnv(Env):
         return self._core.NeedNewAction(agent_id)
 
     def record_state(self, agent_id):
-        return np.array(self._core.RecordState(agent_id))
+        return np.array(self._core.RecordState(agent_id))  # [0:226]
 
     def record_goal(self, agent_id):
         return np.array(self._core.RecordGoal(agent_id))
 
     def get_action_space(self, agent_id):
         return ActionSpace(self._core.GetActionSpace(agent_id))
-    
+
     def set_action(self, agent_id, action):
         return self._core.SetAction(agent_id, action.tolist())
-    
+
     def get_state_size(self, agent_id):
-        return self._core.GetStateSize(agent_id)
+        return self._core.GetStateSize(agent_id)  # - 1024
 
     def get_goal_size(self, agent_id):
         return self._core.GetGoalSize(agent_id)
@@ -100,17 +101,17 @@ class DeepMimicEnv(Env):
         return self._core.GetNumActions(agent_id)
 
     def build_state_offset(self, agent_id):
-        return np.array(self._core.BuildStateOffset(agent_id))
+        return np.array(self._core.BuildStateOffset(agent_id))  # [0:226]
 
     def build_state_scale(self, agent_id):
-        return np.array(self._core.BuildStateScale(agent_id))
-    
+        return np.array(self._core.BuildStateScale(agent_id))  # [0:226]
+
     def build_goal_offset(self, agent_id):
         return np.array(self._core.BuildGoalOffset(agent_id))
 
     def build_goal_scale(self, agent_id):
         return np.array(self._core.BuildGoalScale(agent_id))
-    
+
     def build_action_offset(self, agent_id):
         return np.array(self._core.BuildActionOffset(agent_id))
 
@@ -124,7 +125,7 @@ class DeepMimicEnv(Env):
         return np.array(self._core.BuildActionBoundMax(agent_id))
 
     def build_state_norm_groups(self, agent_id):
-        return np.array(self._core.BuildStateNormGroups(agent_id))
+        return np.array(self._core.BuildStateNormGroups(agent_id))  # [0:226]
 
     def build_goal_norm_groups(self, agent_id):
         return np.array(self._core.BuildGoalNormGroups(agent_id))
@@ -143,7 +144,7 @@ class DeepMimicEnv(Env):
 
     def get_reward_succ(self, agent_id):
         return self._core.GetRewardSucc(agent_id)
-    
+
     def enable_amp_task_reward(self):
         return self._core.EnableAMPTaskReward()
 
@@ -152,24 +153,24 @@ class DeepMimicEnv(Env):
 
     def get_amp_obs_offset(self):
         return np.array(self._core.GetAMPObsOffset())
-    
+
     def get_amp_obs_scale(self):
         return np.array(self._core.GetAMPObsScale())
-    
+
     def get_amp_obs_norm_group(self):
         return np.array(self._core.GetAMPObsNormGroup())
-    
+
     def record_amp_obs_expert(self, agent_id):
         return np.array(self._core.RecordAMPObsExpert(agent_id))
 
     def record_amp_obs_agent(self, agent_id):
         return np.array(self._core.RecordAMPObsAgent(agent_id))
-    
+
     def is_episode_end(self):
         return self._core.IsEpisodeEnd()
 
     def check_terminate(self, agent_id):
-       return Env.Terminate(self._core.CheckTerminate(agent_id))
+        return Env.Terminate(self._core.CheckTerminate(agent_id))
 
     def check_valid_episode(self):
         return self._core.CheckValidEpisode()
@@ -185,3 +186,7 @@ class DeepMimicEnv(Env):
     def set_mode(self, mode):
         self._core.SetMode(mode.value)
         return
+
+    # added by Yifan
+    def record_height_map(self, agent_id):
+        return np.array(self._core.RecordState(agent_id))[226:]

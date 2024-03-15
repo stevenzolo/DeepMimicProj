@@ -68,6 +68,11 @@ protected:
 
 	cDeepMimicCharController();
 
+    // added by Yifan
+	void BuildHeightMap(Eigen::VectorXd& out_map) const;
+	int GetStateMapSize() const;
+	int GetStateMapOffset() const;
+
 	virtual bool ParseParams(const Json::Value& json);
 
 	virtual void ResetParams();

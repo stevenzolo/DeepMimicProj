@@ -6,7 +6,7 @@
     <ProjectGuid>66068768-7ff3-4ca4-9d18-de497b6e2538</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
-    <StartupFile>DeepMimic.py</StartupFile>
+    <StartupFile>mpi_run.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -14,7 +14,7 @@
     <Name>DeepMimic</Name>
     <RootNamespace>pyTerrainRL</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>--arg_file args/run_amp_heading_humanoid3d_locomotion_args.txt</CommandLineArguments>
+    <CommandLineArguments>--arg_file args/train_amp_heading_humanoid3d_locomotion_args.txt</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>CondaEnv|CondaEnv|deepmimic</InterpreterId>

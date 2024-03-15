@@ -167,16 +167,31 @@ void cDeepMimicCharController::RecordState(Eigen::VectorXd& out_state)
 	Eigen::VectorXd ground;
 	Eigen::VectorXd pose;
 	Eigen::VectorXd vel;
+    // added by Yifan
+	Eigen::VectorXd map;
+
 	BuildStatePose(pose);
 	BuildStateVel(vel);
+    // added by Yifan
+	BuildHeightMap(map);
 
 	int pose_offset = GetStatePoseOffset();
 	int pose_size = GetStatePoseSize();
+	int map_offset = GetStateMapOffset();
 	int vel_offset = GetStateVelOffset();
 	int vel_size = GetStateVelSize();
+	int map_size = GetStateMapSize();
 
 	out_state.segment(pose_offset, pose_size) = pose;
 	out_state.segment(vel_offset, vel_size) = vel;
+	out_state.segment(map_offset, map_size) = map;
+
+    // added by Yifan
+//	printf("state size in C: %d\n", state_size);
+//	for(int i = 0; i < state_size; i++)
+//	{
+//	    printf(" state %d: %.5f ", i, out_state[i]);
+//	}
 }
 
 eActionSpace cDeepMimicCharController::GetActionSpace() const
@@ -194,6 +209,8 @@ int cDeepMimicCharController::GetStateSize() const
 	int state_size = 0;
 	state_size += GetStatePoseSize();
 	state_size += GetStateVelSize();
+    // added by Yifan
+	state_size += GetStateMapSize();
 	return state_size;
 }
 
@@ -347,6 +364,12 @@ int cDeepMimicCharController::GetStateVelOffset() const
 	return GetStatePoseOffset() + GetStatePoseSize();
 }
 
+// added by Yifan
+int cDeepMimicCharController::GetStateMapOffset() const
+{
+    return GetStateVelOffset() + GetStateVelSize();
+}
+
 int cDeepMimicCharController::GetStatePoseSize() const
 {
 	return mChar->GetNumBodyParts() * mPosDim - 1; // -1 for root x
@@ -355,4 +378,40 @@ int cDeepMimicCharController::GetStatePoseSize() const
 int cDeepMimicCharController::GetStateVelSize() const
 {
 	return mChar->GetNumBodyParts() * mPosDim;
+}
+
+// added by Yifan
+int cDeepMimicCharController::GetStateMapSize() const
+{
+    return 1024;
+}
+
+void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
+{
+    // printf("Height map is building in C \n");
+	int map_index = 0;
+	int map_size = 32;
+	int right_foot_id = 5;
+	int left_foot_id = 11;
+	double half_length = 11;
+	double grid_size = 2*half_length/(map_size - 1);
+	double curr_height = 0;
+	map = Eigen::VectorXd::Zero(GetStateMapSize());
+	tVector root_pos0 = mChar->GetRootPos();
+	tVector curr_pos = root_pos0;
+	tVector left_corner = root_pos0;
+	left_corner[0] = left_corner[0] - half_length;
+	left_corner[2] = left_corner[2] - half_length;
+	for (int i = 0; i < map_size; i++)
+	{
+	    for (int j = 0; j < map_size; j++)
+	    {
+            curr_pos[0] = left_corner[0] + i*grid_size;
+            curr_pos[2] = left_corner[2] + j*grid_size;
+            curr_height = mGround->SampleHeight(curr_pos);
+            map(map_index) = curr_height;
+            // printf("point (%d, %d) at position (%.5f, %.5f) with height: %.5f\n", i, j, curr_pos[0], curr_pos[2], map(map_index));
+            map_index = map_index + 1;
+        }
+	}
 }

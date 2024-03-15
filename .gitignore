@@ -33,3 +33,5 @@ DeepMimicCore/objs/
 DeepMimicCore/third
 
 DeepMimicCore/DeepMimicCore.py
+
+model_eval/
