@@ -3,6 +3,8 @@
 
 #define SHARP_TERRAIN
 
+
+// modified by Yifan, initially 0.1f, 0.025f
 #ifndef SHARP_TERRAIN 
 	const float cTerrainGen2D::gVertSpacing = 0.1f;
 #else
@@ -604,6 +606,7 @@ double cTerrainGen2D::AddSlope(double width, double slope, std::vector<float>& o
 	return width_added;
 }
 
+// modified by Yifan
 void cTerrainGen2D::OverlaySlopes(double delta_range, double delta_min, double delta_max, double init_slope, int beg_idx, int end_idx,
 									cRand& rand, std::vector<float>& out_data)
 {
@@ -620,7 +623,7 @@ void cTerrainGen2D::OverlaySlopes(double delta_range, double delta_min, double d
 	{
 		if (delta_min != delta_max)
 		{
-			const double w = 0.1;
+			/*const double w = 0.1;
 			double delta = rand.RandDouble(0, delta_range);
 
 			double sign_rand = rand.RandDouble(-1, 1);
@@ -629,6 +632,9 @@ void cTerrainGen2D::OverlaySlopes(double delta_range, double delta_min, double d
 			delta = (neg) ? -delta : delta;
 
 			curr_slope += delta;
+			curr_delta_h += curr_slope * gVertSpacing;*/
+			
+			curr_slope = delta_min;
 			curr_delta_h += curr_slope * gVertSpacing;
 		}
 		else

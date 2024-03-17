@@ -1,0 +1,7 @@
+{
+	"Motions": 
+	[
+		{"Weight": 3, "File": "data/motions/humanoid3d_walk.txt"},
+		{"Weight": 3, "File": "data/motions/humanoid3d_jump.txt"}
+	]
+}

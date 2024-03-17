@@ -17,9 +17,13 @@ double cSceneHeadingAMP::CalcReward(int agent_id) const
 		tVector com = character->CalcCOM();
 
 		double tar_speed = mTargetSpeed;
-		tVector tar_dir = tVector(std::cos(mTargetHeading), 0, -std::sin(mTargetHeading), 0);
+//		tVector tar_dir = tVector(std::cos(mTargetHeading), 0, -std::sin(mTargetHeading), 0);
+        tVector tar_dir = tVector(1, 0, 0, 0);
 
 		double step_dur = char_ctrl->GetTime() - prev_action_time;
+
+//		printf("step duration: %.4f", step_dur);
+
 		tVector avg_vel = (com - prev_action_com) / step_dur;
 		avg_vel[1] = 0.0;
 		double avg_speed = tar_dir.dot(avg_vel);
@@ -88,11 +92,15 @@ void cSceneHeadingAMP::SetTargetSpeed(double speed)
 
 double cSceneHeadingAMP::GetTargetHeading() const
 {
+	// modified by Yifan
+	double mTargetHeading = 0;
 	return mTargetHeading;
 }
 
 void cSceneHeadingAMP::SetTargetHeading(double heading)
 {
+	// modified by Yifan
+	heading = 0;
 	mTargetHeading = heading;
 }
 

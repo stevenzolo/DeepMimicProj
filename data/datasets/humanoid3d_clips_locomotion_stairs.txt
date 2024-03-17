@@ -1,0 +1,18 @@
+{
+	"Motions": 
+	[
+		{"Weight": 3, "File": "data/motions/humanoid3d_walk.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk0.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk1.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk2.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk3.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk0_mirror.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk1_mirror.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk2_mirror.txt"},
+		{"Weight": 3, "File": "data/motions/long/humanoid3d_long_walk3_mirror.txt"},
+		{"Weight": 3, "File": "data/own/upstairs102_1.txt"},
+		{"Weight": 3, "File": "data/own/upstairs102_2.txt"},
+		{"Weight": 3, "File": "data/own/upstairs102_3.txt"},
+		{"Weight": 5, "File": "data/own/downstairs101_1.txt"}
+	]
+}

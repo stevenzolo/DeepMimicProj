@@ -1,0 +1,9 @@
+{
+	"Motions": 
+	[
+		{"Weight": 3, "File": "data/own/downstairs_1.txt"},
+		{"Weight": 3, "File": "data/own/downstairs_2.txt"},
+		{"Weight": 3, "File": "data/own/downstairs3.txt"},
+		{"Weight": 3, "File": "data/own/downstairs4.txt"}
+	]
+}

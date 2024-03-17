@@ -338,11 +338,18 @@ void cGroundVar2D::BuildSegment(int seg_id, double bound_min, double bound_max,
 	std::unique_ptr<tSegment>& seg = mSegments[seg_id];
 	seg->Clear();
 
-	bool contains_origin = (bound_min <= 0) && (bound_max >= 0);
+	/*bool contains_origin = (bound_min <= 0) && (bound_max >= 0);
 	if (contains_origin)
 	{
 		AddPadding(seg_id, bound_min, bound_max);
+	}*/
+
+    // modified by Yifan
+	if (seg_id%1==0)
+	{
+		AddPadding(seg_id, bound_min, bound_max);
 	}
+
 	(*mTerrainFunc)(bound_max - bound_min, mBlendParams, mRand, seg->mData);
 
 	int num_verts = static_cast<int>(seg->mData.size());
@@ -368,7 +375,11 @@ void cGroundVar2D::AddPadding(int seg_id, double bound_min, double bound_max)
 {
 	std::unique_ptr<tSegment>& seg = mSegments[seg_id];
 	double flat_w = std::min(bound_max - bound_min, 1 - bound_min);
-	cTerrainGen2D::BuildFlat(flat_w, mBlendParams, mRand, seg->mData);
+
+    // modified by Yifan: build flat at initial position
+	// the first variable should be "flat_w"
+	cTerrainGen2D::BuildFlat(0, mBlendParams, mRand, seg->mData);
+    // end of modified
 
 	/*
 	cTerrainGen2D::AddBox(5, 0.2, 0.5, seg->mData);

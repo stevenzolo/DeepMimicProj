@@ -443,6 +443,28 @@ void cTerrainGen3D::AddStairs(const tVector& origin, const Eigen::Vector2i& star
         */
 
 		size_t coord_z = j + start_coord[1];
+		/*for (int i = 0; i < res_x; ++i)
+		{
+			size_t coord_x = i + start_coord[0];
+		 	size_t idx = coord_z * out_res[0] + coord_x;
+
+		 	double x = origin[0] + (i / (res_x - 1.0)) * size[0];
+
+		 	x = cMathUtil::Sign(x) * std::max(0.0, (std::abs(x) - pad));
+			
+			double h = (std::floor(x*2))*0.1/2;
+			rand.Seed(h);
+			h += rand.RandDouble(step_h_min, step_h_max);
+			h += cMathUtil::RandDoubleSeed(h*randomness)*(step_h_max-step_h_min)+step_h_min;
+			
+			int curr_flags = 1 << eVertFlagEnableTex;
+		 	out_data[idx] = h;
+		 	out_flags[idx] = curr_flags;
+		}*/
+
+		// the last number (*0.1) decide the increase of height relative to the increase of width
+		double h = (std::floor(origin[0]))*0.1;
+		double end_h = std::floor(origin[0] + size[0]) * 0.1;
 		for (int i = 0; i < res_x; ++i)
 		{
 			size_t coord_x = i + start_coord[0];
@@ -452,14 +474,22 @@ void cTerrainGen3D::AddStairs(const tVector& origin, const Eigen::Vector2i& star
 
 			x = cMathUtil::Sign(x) * std::max(0.0, (std::abs(x) - pad));
 
-            double h = (std::floor(x*2))*0.1/2;
-            //rand.Seed(h);
-            //h += rand.RandDouble(step_h_min, step_h_max);
-            h += cMathUtil::RandDoubleSeed(h*randomness)*(step_h_max-step_h_min)+step_h_min;
+			// add stairs, i % num decide the width of the stairs
+			if (i % 8 == 0 && i > 50){
+				h += 0.15;
+			}
+
+			// add gaps
+			double temp_h = h;
+			//if (i>150 && i<155){ h = temp_h - 2; }
+
+			h = h > end_h ? end_h : h;
 
 			int curr_flags = 1 << eVertFlagEnableTex;
 			out_data[idx] = h;
 			out_flags[idx] = curr_flags;
+
+			h = temp_h;
 		}
 	}
 }

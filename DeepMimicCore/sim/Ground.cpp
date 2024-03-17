@@ -45,9 +45,10 @@ cGround::tParams::tParams()
 	mOrigin.setZero();
 	mBlend = 0;
 
+	// modified by Yifan, initial values are 20, 0.2, 0.2
 	mGroundWidth = 20;
-	mVertSpacingX = 0.2;
-	mVertSpacingZ = 0.2;
+	mVertSpacingX = 0.05;
+	mVertSpacingZ = 0.1;
 
 	mRandSeed = 0;
 	mHasRandSeed = false;

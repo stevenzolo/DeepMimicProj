@@ -2,6 +2,9 @@
 #include "anim/ClipsController.h"
 #include "sim/CtController.h"
 
+// modified by Yifan
+int number = 0;
+
 double cSceneImitateAMP::TimeWarpCost(const Eigen::VectorXd* data0, const Eigen::VectorXd* data1)
 {
 	assert(data0->size() == data1->size());
@@ -98,13 +101,80 @@ void cSceneImitateAMP::GetAMPObsNormGroup(Eigen::VectorXi& out_data) const
 	out_data = cCharController::gNormGroupSingle * Eigen::VectorXi::Ones(GetAMPObsSize());
 }
 
+//void cSceneImitateAMP::RecordAMPObsAgent(int agent_id, Eigen::VectorXd& out_data)
+//{
+//	const auto* character = GetAgentChar(agent_id);
+//	const auto& pose = character->GetPose();
+//	const auto& vel = character->GetVel();
+//
+//	tVector root_pos = cKinTree::GetRootPos(pose);
+//	const auto& ground = GetGround();
+//	double ground_h = ground->SampleHeight(root_pos);
+//
+//	BuildAMPObs(agent_id, mPrevPose, mPrevVel, pose, vel, ground_h, out_data);
+//}
+
+// Modified: Yifan
 void cSceneImitateAMP::RecordAMPObsAgent(int agent_id, Eigen::VectorXd& out_data)
 {
 	const auto* character = GetAgentChar(agent_id);
 	const auto& pose = character->GetPose();
 	const auto& vel = character->GetVel();
 
+	// print data
+	/*number = number + 1;
+	for(int i = 0; i < pose.size(); ++i)
+	{
+	printf("%.5f ", pose[i]);
+	}
+	printf("%d", number);
+	printf("\n");
+	int num_joints = character->GetNumJoints();
+	for (int j = 0; j < num_joints; ++j)
+	{
+	    const auto is_contact = character->IsInContact(j);
+	    printf("joint %d is contact: %d\n", j, is_contact);
+	}
+	for (int j = 0; j < num_joints; ++j)
+	{
+	    const auto joint_pos = character->GetBodyPartPos(j);
+	    printf("joint %d position: %.5f %.5f %.5f\n", j, joint_pos[0], joint_pos[1], joint_pos[2]);
+	}
+		for (int j = 0; j < num_joints; ++j)
+	{
+	    const auto joint_vel = character->GetBodyPartVel(j);
+	    printf("joint %d velocity: %.5f %.5f %.5f\n", j, joint_vel[0], joint_vel[1], joint_vel[2]);
+	}
+
+    const auto joint_pos = character->GetBodyPartPos(0);
+    printf("joint %d position: %.5f %.5f %.5f\n", 0, joint_pos[0], joint_pos[1], joint_pos[2]);
+    const auto root_world_pos = character->GetRootPos();
+    printf("Root World Position: %.5f, %.5f, %.5f\n", root_world_pos[0], root_world_pos[1], root_world_pos[2]);
+    const auto com_world_pos = character->CalcCOM();
+    printf("COM world position: %.5f %.5f %.5f\n", com_world_pos[0], com_world_pos[1], com_world_pos[2]);
+    const auto com_vel = character->CalcCOMVel();
+    printf("COM velocity: %.5f %.5f %.5f\n", com_vel[0], com_vel[1], com_vel[2]);*/
+	
+	// output data
+    /*std::ofstream out;
+    out.open("output_data/AMP_ramp_1.txt", std::ios::app);
+    if (out.is_open())
+    {
+        for (int i = 0; i < pose.size(); ++i)
+        {
+            out << std::to_string(pose[i]) << ' ';
+        }
+        for (int j = 0; j < num_joints; ++j)
+	    {
+	        const auto is_contact = character->IsInContact(j);
+	        out << std::to_string(is_contact) << ' ';
+	    }
+        out << std::to_string(number) << "\n";
+        out.close();
+    }*/
+
 	tVector root_pos = cKinTree::GetRootPos(pose);
+//	printf("Kin Root Position: %.5f, %.5f, %.5f\n", root_pos[0], root_pos[1], root_pos[2]);
 	const auto& ground = GetGround();
 	double ground_h = ground->SampleHeight(root_pos);
 
