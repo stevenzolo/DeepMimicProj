@@ -23,6 +23,9 @@ public:
 	virtual bool EnableRandSpeed() const;
 	virtual void EnableRandSpeed(bool enable);
 
+	// added @yan
+	//virtual void CalcTerrainPath();
+
 	virtual int GetGoalSize(int agent_id) const;
 	virtual void RecordGoal(int agent_id, Eigen::VectorXd& out_goal) const;
 

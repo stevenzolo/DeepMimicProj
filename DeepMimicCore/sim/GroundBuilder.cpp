@@ -10,6 +10,8 @@
 #include "sim/GroundObstaclesDynamicCharacters3D.h"
 #include "sim/GroundDynamicObstacles3D.h"
 #include "sim/GroundConveyor3D.h"
+#include "sim/OverlayTerrainGen3D.h"
+#include "sim/Combine3dTerrains.h"
 
 bool cGroundBuilder::ParseParamsJson(const std::string& param_file, cGround::tParams& out_params)
 {
@@ -96,6 +98,12 @@ void cGroundBuilder::BuildGround(const std::shared_ptr<cWorld>& world, const cGr
 	case cGround::eClassConveyor3D:
 		BuildGroundConveyor3D(world, params, out_ground);
 		break;
+	case cGround::eClassOverlay3D:
+		BuildGroundOverlay(world, params, out_ground);
+		break;
+	case cGround::eClassCombined3D:
+		BuildGroundCombined(world, params, out_ground);
+		break;
 	default:
 		std::cout << "unsupported type!!!!" << std::endl;
 		assert(false); // unsupported ground class
@@ -122,6 +130,12 @@ bool cGroundBuilder::ParseParamsJason(cGround::eType type, const Json::Value& js
 		case cGround::eClassDynamicObstacles3D:
 		case cGround::eClassConveyor3D:
 			succ = cGroundVar3D::ParseParamsJson(json, out_params);
+			break;
+		case cGround::eClassOverlay3D:
+			succ = cOverlayTerrainGen3D::ParseParamsJson(json, out_params);
+			break;
+		case cGround::eClassCombined3D:
+			succ = cCombine3dTerrains::ParseParamsJson(json, out_params);
 			break;
 		default:
 			assert(false); // unsupported ground class
@@ -237,3 +251,34 @@ void cGroundBuilder::BuildGroundConveyor3D(const std::shared_ptr<cWorld>& world,
 	out_ground = ground;
 }
 
+void cGroundBuilder::BuildGroundOverlay(const std::shared_ptr<cWorld>& world, const cGround::tParams& params, std::shared_ptr<cGround>& out_ground)
+{
+	const double spawn_offset = 0;
+
+	std::shared_ptr<cGroundVar3D> ground_var3d = std::shared_ptr<cGroundVar3D>(new cGroundVar3D());
+	auto terrain_func = cOverlayTerrainGen3D::GetTerrainFunc(params.mType);
+	double half_width = params.mGroundWidth / 2;
+
+	tVector bound_min = tVector(-half_width + spawn_offset, 0, -half_width + spawn_offset, 0);
+	tVector bound_max = tVector(half_width + spawn_offset, 0, half_width + spawn_offset, 0);
+
+	ground_var3d->SetTerrainFunc(terrain_func);
+	ground_var3d->Init(world, params, bound_min, bound_max);
+	out_ground = ground_var3d;
+}
+
+void cGroundBuilder::BuildGroundCombined(const std::shared_ptr<cWorld>& world, const cGround::tParams& params, std::shared_ptr<cGround>& out_ground)
+{
+	const double spawn_offset = 0;
+
+	std::shared_ptr<cGroundVar3D> ground_var3d = std::shared_ptr<cGroundVar3D>(new cGroundVar3D());
+	auto terrain_func = cCombine3dTerrains::GetTerrainFunc(params.mType);
+	double half_width = params.mGroundWidth / 2;
+
+	tVector bound_min = tVector(-half_width + spawn_offset, 0, -half_width + spawn_offset, 0);
+	tVector bound_max = tVector(half_width + spawn_offset, 0, half_width + spawn_offset, 0);
+
+	ground_var3d->SetCombTerrainFunc(terrain_func);
+	ground_var3d->Init(world, params, bound_min, bound_max);
+	out_ground = ground_var3d;
+}

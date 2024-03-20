@@ -1,7 +1,6 @@
 #pragma once
-
 #include "sim/Ground.h"
-#include "sim/TerrainGen3D.h"
+#include "sim/Combine3dTerrains.h"
 #include "sim/OverlayTerrainGen3D.h"
 
 class cGroundVar3D : public cGround
@@ -61,7 +60,8 @@ public:
 	virtual void GetRes(int& out_x_res, int& out_z_res) const;
 
 	virtual void SetTerrainFunc(cTerrainGen3D::tTerrainFunc func);
-	virtual void SetOverTerrainFunc(cOverlayTerrainGen3D::tOverTerrainFunc func);
+	virtual void SetCombTerrainFunc(cCombine3dTerrains::tCombTerrainFunc func);	// todo, "already defined/declared" bug for "SetTerrainFunc" reload
+	virtual void SetTerrainFunc(cOverlayTerrainGen3D::tOverTerrainFunc func);
 	virtual bool HasSimBody() const;
 
 	virtual int GetSlabID(int s) const;
@@ -75,14 +75,20 @@ public:
 
 protected:
 	static const int gNumSlabs = 4;
+	enum eTerrainFuncType
+	{
+		eTerrainGen3D,
+		eOverlay3D,
+		eCombine3D
+	};
+	eTerrainFuncType mTerrainFuncType;
 	
 	cTerrainGen3D::tTerrainFunc mTerrainFunc;
 	cOverlayTerrainGen3D::tOverTerrainFunc mOverTerrainFunc;
+	cCombine3dTerrains::tCombTerrainFunc mCombTerrainFunc;
 
 	tSlab mSlabs[gNumSlabs];
 	int mSlabOrder[gNumSlabs];
-	// @Yan, declare variable to save parameters of overlay terrain params
-	static Json::Value mSlabOverlayTerrains[gNumSlabs];
 
 	virtual void ResetParams();
 	virtual int GetBlendParamSize() const;
@@ -92,8 +98,10 @@ protected:
 
 	virtual tSlab& GetSlab(int s);
 	virtual void BuildSlab(int s, const tVector& bound_min, const tVector& bound_max);
+	virtual void BuildSlabHeighData(const tVector& bound_min, const tVector& bound_max,
+									std::vector<float>& out_data, std::vector<int>& out_flags);	
 	virtual void BuildSlabHeighData(int s, const tVector& bound_min, const tVector& bound_max,
-									std::vector<float>& out_data, std::vector<int>& out_flags);	// @Yan, add "s"
+		std::vector<float>& out_data, std::vector<int>& out_flags);
 	virtual void GetBounds(tVector& bound_min, tVector& bound_max) const;
 
 	virtual void ClearSlabData(int s);

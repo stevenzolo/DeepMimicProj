@@ -21,4 +21,6 @@ protected:
 	static void BuildGroundObstacles3D(const std::shared_ptr<cWorld>& world, const cGround::tParams & params, std::shared_ptr<cGround>& out_ground);
 	static void BuildGroundDynamicObstacles3D(const std::shared_ptr<cWorld>& world, const cGround::tParams & params, std::shared_ptr<cGround>& out_ground);
 	static void BuildGroundConveyor3D(const std::shared_ptr<cWorld>& world, const cGround::tParams & params, std::shared_ptr<cGround>& out_ground);
+	static void BuildGroundOverlay(const std::shared_ptr<cWorld>& world, const cGround::tParams& params, std::shared_ptr<cGround>& out_ground);
+	static void BuildGroundCombined(const std::shared_ptr<cWorld>& world, const cGround::tParams& params, std::shared_ptr<cGround>& out_ground);
 };

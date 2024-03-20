@@ -1,0 +1,10 @@
+{
+"Type": "combined3d_terrains",
+
+"Params": 
+[
+	{
+	"DefaultKey":0
+	}
+]
+}

@@ -18,6 +18,8 @@ public:
 		eClassObstaclesDynamicCharacters3D,
 		eClassDynamicObstacles3D,
 		eClassConveyor3D,
+		eClassOverlay3D,
+		eClassCombined3D,
 		eClassMax,
 		eClassInvalid
 	};
@@ -51,6 +53,8 @@ public:
 		eTypeConveyor3D,
 		eTypeVar3DCheckers,
 		eTypeVar3DStairs,
+		eTypeOverlay3DTerrains,		// added
+		eTypeCombined3DTerrains,	// added
 		eTypeMax
 	};
 

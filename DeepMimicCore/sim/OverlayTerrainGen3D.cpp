@@ -1,5 +1,7 @@
 #include "OverlayTerrainGen3D.h"
 
+Json::Value cOverlayTerrainGen3D::mSlabOverlayTerrains[gNumSlabs] = {};
+
 Eigen::VectorXd cOverlayTerrainGen3D::mOverBlendParams = Eigen::VectorXd::Zero(eOverParamsMax);
 
 const cOverlayTerrainGen3D::tParamDef cOverlayTerrainGen3D::gParamDefs[] =
@@ -29,18 +31,113 @@ void cOverlayTerrainGen3D::GetDefaultParams(Eigen::VectorXd& out_params)
 	}
 }
 
-void cOverlayTerrainGen3D::LoadParams(const Json::Value& root)
+bool cOverlayTerrainGen3D::ParseParamsJson(const Json::Value& json, Eigen::VectorXd& out_params)
 {
-	cOverlayTerrainGen3D::GetDefaultParams(mOverBlendParams);
+	if (!json["SlabTerrains"].isNull())
+	{
+		Json::Value slabs_terrain_arr = json["SlabTerrains"];
+		assert(slabs_terrain_arr.isArray());
+		assert(gNumSlabs == slabs_terrain_arr.size());
+
+		for (int i = 0; i < gNumSlabs; ++i)
+		{
+			mSlabOverlayTerrains[i] = slabs_terrain_arr[i];
+		}
+	}
+
+	GetDefaultParams(mOverBlendParams);
 	for (int i = 0; i < eOverParamsMax; ++i)
 	{
 		const std::string& name = gParamDefs[i].mName;
-		if (!root[name].isNull())
+		if (!json[name].isNull())
 		{
-			double val = root[name].asDouble();
+			double val = json[name].asDouble();
 			mOverBlendParams[i] = val;
 		}
 	}
+
+	cTerrainGen3D::LoadParams(json, out_params);
+	return true;
+}
+
+cOverlayTerrainGen3D::tOverTerrainFunc cOverlayTerrainGen3D::GetTerrainFunc(cGround::eType terrain_type)
+{
+	switch (terrain_type)
+	{
+	case cGround::eTypeOverlay3DTerrains:
+		return BuildDemo;
+	default:
+		printf("Unsupported ground var3d type.\n");
+		assert(false);
+		return BuildDemo;
+	}
+}
+
+void cOverlayTerrainGen3D::BuildDemo(
+	int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max, 
+	const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
+)
+{
+	// BuildFlat as base
+	BuildFlat(bound_min, bound_max - bound_min, spacing_x, spacing_z, params, rand, out_data, out_flags);
+
+	tVector overlay_bound_min = tVector::Zero();
+	tVector overlay_bound_max = tVector::Zero();
+	switch (s)
+	{
+	case 0:
+		overlay_bound_min[0] = -10;
+		overlay_bound_min[2] = -10;
+		overlay_bound_max[0] = -3;
+		overlay_bound_max[2] = -4;
+		oBuildGaps(
+			bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			spacing_x, spacing_z, rand, out_data, out_flags
+		);
+		break;
+	case 1:
+		overlay_bound_min[0] = 3;
+		overlay_bound_min[2] = -10;
+		overlay_bound_max[0] = 12;
+		overlay_bound_max[2] = -5;
+		oBuildPit(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			spacing_x, spacing_z, rand, out_data, out_flags);
+		break;
+	case 2:
+		overlay_bound_min[0] = -12;
+		overlay_bound_min[2] = 3;
+		overlay_bound_max[0] = -6;
+		overlay_bound_max[2] = 9;
+		oBuildSlopeStair(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			spacing_x, spacing_z, rand, out_data, out_flags);
+		break;
+	case 3:
+		overlay_bound_min[0] = 3;
+		overlay_bound_min[2] = 3;
+		overlay_bound_max[0] = 9;
+		overlay_bound_max[2] = 10;
+		oBuildStairSlope(bound_min, bound_max, overlay_bound_min, overlay_bound_max,
+			spacing_x, spacing_z, rand, out_data, out_flags);
+		break;
+	default:
+		break;
+	}
+
+	/*Json::Value terrain_root = mSlabOverlayTerrains[s];
+	for (const std::string& terrain_func_key : terrain_root.getMemberNames())
+	{
+		int overlay_num = terrain_root[terrain_func_key].size();
+		for (int i = 0; i < overlay_num; ++i)
+		{
+			Json::Value overlay_params_arr = terrain_root[terrain_func_key][i];
+			tVector overlay_bound_min = tVector::Zero();
+			tVector overlay_bound_max = tVector::Zero();
+			overlay_bound_min[0] = overlay_params_arr[0].asDouble();
+			overlay_bound_min[2] = overlay_params_arr[1].asDouble();
+			overlay_bound_max[0] = overlay_params_arr[2].asDouble();
+			overlay_bound_max[2] = overlay_params_arr[3].asDouble();
+		}
+	}*/
 }
 
 void cOverlayTerrainGen3D::oBuildGaps(

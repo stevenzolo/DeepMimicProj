@@ -1,6 +1,7 @@
 #pragma once
 #include "TerrainGen3D.h"
-class cOverlayTerrainGen3D : public cTerrainGen3D
+
+class cOverlayTerrainGen3D : virtual public cTerrainGen3D
 {
 public:
 
@@ -23,62 +24,69 @@ public:
 	};
 	static const tParamDef gParamDefs[];
 	static void GetDefaultParams(Eigen::VectorXd& out_params);
-	static void LoadParams(const Json::Value& root);
+	static bool ParseParamsJson(const Json::Value& json, Eigen::VectorXd& out_params);
 
 	typedef void(*tOverTerrainFunc)(
-		const tVector& global_bound_min, const tVector& global_bound_max,
-		tVector& overlay_bound_min, tVector& overlay_bound_max,
-		double spacing_x, double spacing_z, cRand& rand,
-		std::vector<float>& out_data, std::vector<int>& out_flags);
+		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
+		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
+		);
+	static tOverTerrainFunc GetTerrainFunc(cGround::eType terrain_type);
+
+	static void BuildDemo(
+		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
+		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
+	);
+
+protected:
+	static const int gNumSlabs = 4;		// same to value in GroundVar3D.h
+	static Json::Value mSlabOverlayTerrains[gNumSlabs];
 
 	static void oBuildGaps(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildPit(
+	static void oBuildPit(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildWall(
+	static void oBuildWall(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildBeam(
+	static void oBuildBeam(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildBars(
+	static void oBuildBars(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildSlopes(
+	static void oBuildSlopes(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildStairs(
+	static void oBuildStairs(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildSlopeStair(
+	static void oBuildSlopeStair(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void cOverlayTerrainGen3D::oBuildStairSlope(
+	static void oBuildStairSlope(
 		const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 
-
-protected:
 	static double oAddBox(
 		const float spacing, const float depth, const float length, const tVector& origin,
 		const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
