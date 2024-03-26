@@ -4,7 +4,7 @@
 --num_sim_substeps 2
 --world_scale 4
 
---terrain_file data/terrain/overlay3d_terrains.txt
+--terrain_file data/terrain/overlay3d_rover.txt
 
 --char_types general
 --character_files data/characters/humanoid3d.txt
@@ -33,4 +33,4 @@
 --agent_files data/agents/ct_agent_humanoid_amp_tasks.txt
 --train_agents false
 
---model_files data/policies/humanoid3d_amp/agent0_int_model_12k.ckpt
+--model_files data/policies/humanoid3d_amp_new/amp_heading_stairs3d_t4400.ckpt

@@ -14,7 +14,7 @@ cGroundVar3D::cGroundVar3D()
 {
 	ResetParams();
 	mTerrainFunc = cTerrainGen3D::BuildFlat;
-	mOverTerrainFunc = cOverlayTerrainGen3D::BuildDemo;
+	mOverTerrainFunc = cOverlayTerrainGen3D::BuildDefaultDemo;
 	mCombTerrainFunc = cCombine3dTerrains::BuildStairRamp;
 }
 
@@ -30,7 +30,7 @@ void cGroundVar3D::Init(std::shared_ptr<cWorld> world, const tParams& params,
 	mWorld = world;
 	SetupRandGen();
 
-	mParams.mGroundWidth = 40; // hack
+	//mParams.mGroundWidth = 40; // hack
 	SetParamBlend(params.mBlend);
 	InitSlabs(bound_min, bound_max);
 	FlagUpdate();

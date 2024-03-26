@@ -7,6 +7,21 @@ public:
 
 	static Eigen::VectorXd mOverBlendParams;
 
+	enum eType
+	{
+		eTypePlateau,
+		eTypeGaps,
+		eTypePit,
+		eTypeWall,
+		eTypeBeam,
+		eTypeBars,
+		eTypeSlopes,
+		eTypeStairs,
+		eTypeSlopeStair,
+		eTypeStairSlope,
+		eTypeMax
+	};
+
 	enum eOverParams
 	{
 		eOverBoxSpacing,
@@ -20,11 +35,13 @@ public:
 		eOverStairSpacing,
 		eOverStairIncease,
 		eOverStairHeight,
+		eOverPlateauHeight,
 		eOverParamsMax
 	};
 	static const tParamDef gParamDefs[];
 	static void GetDefaultParams(Eigen::VectorXd& out_params);
 	static bool ParseParamsJson(const Json::Value& json, Eigen::VectorXd& out_params);
+	static void ParseType(const std::string& str, eType& out_type);
 
 	typedef void(*tOverTerrainFunc)(
 		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
@@ -32,7 +49,11 @@ public:
 		);
 	static tOverTerrainFunc GetTerrainFunc(cGround::eType terrain_type);
 
-	static void BuildDemo(
+	static void BuildDefaultDemo(
+		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
+		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
+	);
+	static void BuildRover(
 		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
 		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
 	);
@@ -40,66 +61,80 @@ public:
 protected:
 	static const int gNumSlabs = 4;		// same to value in GroundVar3D.h
 	static Json::Value mSlabOverlayTerrains[gNumSlabs];
+	static Eigen::Vector2i mbuild_terrain_point_dir;
 
+	typedef void(*tOBuildFunc)(
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
+		tVector& overlay_bound_min, tVector& overlay_bound_max,
+		double spacing_x, double spacing_z, cRand& rand,
+		std::vector<float>& out_data, std::vector<int>& out_flags);
+	static tOBuildFunc GetOBuildFunc(eType terrain_type);
+
+	static void oBuildPlateau(
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
+		tVector& overlay_bound_min, tVector& overlay_bound_max,
+		double spacing_x, double spacing_z, cRand& rand,
+		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildGaps(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildPit(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildWall(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildBeam(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildBars(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildSlopes(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildStairs(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildSlopeStair(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 	static void oBuildStairSlope(
-		const tVector& global_bound_min, const tVector& global_bound_max,
+		const Eigen::Vector2i& point_dir, const tVector& global_bound_min, const tVector& global_bound_max,
 		tVector& overlay_bound_min, tVector& overlay_bound_max,
 		double spacing_x, double spacing_z, cRand& rand,
 		std::vector<float>& out_data, std::vector<int>& out_flags);
 
 	static double oAddBox(
-		const float spacing, const float depth, const float length, const tVector& origin,
+		const double start_height, const Eigen::Vector2i& point_dir, const float spacing, const float depth, const float length,
+		const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, 
+		double spacing_z, const Eigen::Vector2i& out_res, std::vector<float>& out_data, std::vector<int>& out_flags);
+	static void oAddSlope(
+		const double slope, const double end_height, const double start_height, const Eigen::Vector2i& point_dir, const tVector& origin,
 		const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
 		const Eigen::Vector2i& out_res, std::vector<float>& out_data, std::vector<int>& out_flags);
-	static double oAddSlope(
-		const double slope, const double start_height, const tVector& origin,
+	static void oAddStair(
+		const double start_height, const double end_height, const Eigen::Vector2i& point_dir, const float stair_space,
+		const float stair_increase, const tVector& origin,
 		const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
 		const Eigen::Vector2i& out_res, std::vector<float>& out_data, std::vector<int>& out_flags);
-	static double oAddStair(
-		const double start_height, const float stair_space, const float stair_increase, const tVector& origin,
-		const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
-		const Eigen::Vector2i& out_res, std::vector<float>& out_data, std::vector<int>& out_flags);
-	static void oAddLanding(const float depth, 
+	static void oAddLanding(const float depth, const Eigen::Vector2i& point_dir,
 		const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
 		const Eigen::Vector2i& out_res, std::vector<float>& out_data, std::vector<int>& out_flags);
 

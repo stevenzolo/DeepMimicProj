@@ -1,0 +1,10 @@
+{
+"Type": "overlay3d_demo",
+
+"Params": 
+[
+	{
+	"DefaultKey":0
+	}
+]
+}

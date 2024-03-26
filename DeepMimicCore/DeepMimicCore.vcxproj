@@ -246,6 +246,7 @@
     <ClCompile Include="anim\Motion.cpp" />
     <ClCompile Include="anim\MotionController.cpp" />
     <ClCompile Include="anim\Shape.cpp" />
+    <ClCompile Include="sim\Combine3dTerrains.cpp" />
     <ClCompile Include="DeepMimicCore_wrap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -372,6 +373,7 @@
     <ClInclude Include="anim\Motion.h" />
     <ClInclude Include="anim\MotionController.h" />
     <ClInclude Include="anim\Shape.h" />
+    <ClInclude Include="sim\Combine3dTerrains.h" />
     <ClInclude Include="sim\OverlayTerrainGen3D.h" />
     <ClInclude Include="render\Camera.h" />
     <ClInclude Include="render\DrawCharacter.h" />

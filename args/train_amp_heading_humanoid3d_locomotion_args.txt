@@ -39,6 +39,7 @@
 --vel_reward_scale 0.25
 
 --agent_files data/agents/ct_agent_humanoid_amp_tasks.txt
+#--model_files data/policies/humanoid3d_amp_new/amp_heading_plane_t200.ckpt
 
 --output_path output
 #--int_output_path output/intermediate

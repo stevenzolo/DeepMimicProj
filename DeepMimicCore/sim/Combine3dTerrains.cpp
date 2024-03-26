@@ -132,7 +132,7 @@ void cCombine3dTerrains::AddFlat(const double h, const tVector& origin, const Ei
 			size_t idx = coord_z * out_res[0] + coord_x;
 			//double h = 0;
 
-			if (idx < out_res[0] * (j + 1))
+			if (idx < out_res[0] * (static_cast<int>(coord_z) + 1))		// to fix error "index out of range"
 			{
 				int curr_flags = 1 << eVertFlagEnableTex;
 				out_data[idx] = static_cast<float>(h);

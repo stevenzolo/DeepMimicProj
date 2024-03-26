@@ -389,6 +389,9 @@
     <ClCompile Include="sim\OverlayTerrainGen3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sim\Combine3dTerrains.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="util\CircularBuffer.h">
@@ -782,6 +785,7 @@
       <Filter>Source Files\util</Filter>
     </ClInclude>
     <ClInclude Include="sim\OverlayTerrainGen3D.h" />
+    <ClInclude Include="sim\Combine3dTerrains.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DeepMimicCore.i" />

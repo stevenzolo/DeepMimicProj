@@ -61,6 +61,9 @@ protected:
 	double mPrevActionTime;
 	tVector mPrevActionCOM;
 
+	const int sample_num = 100;
+	const double sample_span = 10;
+
 	std::shared_ptr<cGround> mGround;
 
 	// for recording prediction from the value function, mainly for visualization

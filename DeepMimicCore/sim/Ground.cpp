@@ -30,7 +30,8 @@ std::string gGroundTypeNames[cGround::eTypeMax] =
 	"conveyor3d",
 	"var3d_checkers",
 	"var3d_stairs",
-	"overlay3d_terrains",			// added
+	"overlay3d_demo",			// added
+	"overlay3d_rover",			// added
 	"combined3d_terrains"		// added
 };
 
@@ -111,7 +112,8 @@ cGround::eClass cGround::GetClassFromType(eType ground_type)
         case eTypeVar3DStairs:
 			ground_class = eClassVar3D;
 			break;
-		case eTypeOverlay3DTerrains:
+		case eTypeOverlay3DDemo:
+		case eTypeOverlay3DRover:
 			ground_class = eClassOverlay3D;
 			break;
 		case eTypeCombined3DTerrains:
