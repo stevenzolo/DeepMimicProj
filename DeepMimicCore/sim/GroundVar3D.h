@@ -89,6 +89,7 @@ protected:
 
 	tSlab mSlabs[gNumSlabs];
 	int mSlabOrder[gNumSlabs];
+	tVector mSlabOffset;
 
 	virtual void ResetParams();
 	virtual int GetBlendParamSize() const;

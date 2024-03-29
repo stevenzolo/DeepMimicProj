@@ -17,8 +17,8 @@ double cSceneHeadingAMP::CalcReward(int agent_id) const
 		tVector com = character->CalcCOM();
 
 		double tar_speed = mTargetSpeed;
-		//tVector tar_dir = tVector(std::cos(mTargetHeading), 0, -std::sin(mTargetHeading), 0);
-		tVector tar_dir = tVector(1, 0, 0, 0);
+		tVector tar_dir = tVector(std::cos(mTargetHeading), 0, -std::sin(mTargetHeading), 0);
+		//tVector tar_dir = tVector(1, 0, 0, 0);
 
 		double step_dur = char_ctrl->GetTime() - prev_action_time;
 
@@ -82,10 +82,45 @@ void cSceneHeadingAMP::ParseArgs(const std::shared_ptr<cArgParser>& parser)
 	parser->ParseDouble("vel_reward_scale", mVelRewardScale);
 }
 
-//void CalcTerrainPath()
-//{
-//
-//}
+double cSceneHeadingAMP::UpdateHeadingToTurnPoint()
+{
+	// heading is the direction of the root in the xz plane, refer to (1, 0, 0, 0)
+	// assign the path direction for each position
+	const auto& character = GetCharacter();
+	tVector root_pos = character->GetRootPos();
+	double GroundWidth = 20;
+	root_pos /= GroundWidth;
+	double x_pos = root_pos[0];
+	double z_pos = root_pos[2];
+	tVector turn_point_pos = tVector(0, 0, 0, 0);
+
+	if (std::abs(z_pos) < 0.125 && x_pos > -0.1 && x_pos < 0.75)
+	{
+		turn_point_pos = tVector(0.875, 0, 0, 0);
+	}
+	else if (z_pos < 1 && z_pos > -0.75 && std::abs(x_pos - 0.875) < 0.125)
+	{
+		turn_point_pos = tVector(0.875, 0, -0.875, 0);
+	}
+	else if (std::abs(z_pos + 0.875) < 0.125 && x_pos > -0.75 && x_pos < 1)
+	{
+		turn_point_pos = tVector(-0.875, 0, -0.875, 0);
+	}
+	else if (z_pos < 0.75 && z_pos > -1 && std::abs(x_pos + 0.875) < 0.125)
+	{
+		turn_point_pos = tVector(-0.875, 0, 0.875, 0);
+	}
+	else if (std::abs(z_pos - 0.875) < 0.125 && x_pos > -1 && x_pos < 0.75)
+	{
+		turn_point_pos = tVector(0.875, 0, 0.875, 0);
+	}
+	else { assert(false); }
+
+	tVector delta = turn_point_pos - root_pos;
+	double heading_dir = std::atan2(-delta[2], delta[0]);
+
+	return heading_dir;
+}
 
 void cSceneHeadingAMP::SetTargetSpeed(double speed)
 {
@@ -95,18 +130,14 @@ void cSceneHeadingAMP::SetTargetSpeed(double speed)
 
 double cSceneHeadingAMP::GetTargetHeading() const
 {
-	// heading is the direction of the root in the xz plane, refer to (1, 0, 0, 0)
-	// assign the path direction for each position
-	
-	// modified by Yifan 
-	double mTargetHeading = 0;	
+	//double mTargetHeading = 0;	// modified by Yifan
 	return mTargetHeading;
 }
 
 void cSceneHeadingAMP::SetTargetHeading(double heading)
 {
 	// modified by Yifan
-	heading = 0;
+	//heading = 0;
 	mTargetHeading = heading;
 }
 
@@ -169,7 +200,8 @@ std::string cSceneHeadingAMP::GetName() const
 
 void cSceneHeadingAMP::UpdateTargetHeading()
 {
-	double new_heading = GetTargetHeading();
+	//double new_heading = GetTargetHeading();
+	double new_heading = UpdateHeadingToTurnPoint();
 
 	if (EnableTargetPos())
 	{

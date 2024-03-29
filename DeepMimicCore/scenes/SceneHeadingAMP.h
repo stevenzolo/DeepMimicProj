@@ -15,6 +15,7 @@ public:
 
 	virtual void SetTargetSpeed(double speed);
 	virtual double GetTargetHeading() const;
+	virtual double UpdateHeadingToTurnPoint();  	// @Yan
 	virtual void SetTargetHeading(double heading);
 	virtual tVector GetTargetPos() const;
 	virtual void SetTargetPos(const tVector& target_pos);
@@ -22,9 +23,6 @@ public:
 	virtual void EnableTargetPos(bool enable);
 	virtual bool EnableRandSpeed() const;
 	virtual void EnableRandSpeed(bool enable);
-
-	// added @yan
-	//virtual void CalcTerrainPath();
 
 	virtual int GetGoalSize(int agent_id) const;
 	virtual void RecordGoal(int agent_id, Eigen::VectorXd& out_goal) const;

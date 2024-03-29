@@ -416,17 +416,46 @@ int cDeepMimicCharController::GetStateMapSize() const
 //	}
 //}
 
-// revised @ Yan
 void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 {
-	double sample_step = sample_span / sample_num;
+    // printf("Height map is building in C \n");
+	int map_index = 0;
+	int map_size = 32;
+	double backward_extension = 0.5;
+	double forward_extension = 3.0;
+	double square_width = backward_extension + forward_extension;
+	double grid_size = square_width / (map_size - 1);
 	double curr_height = 0;
 	map = Eigen::VectorXd::Zero(GetStateMapSize());
-	tVector curr_pos = mChar->GetRootPos();
-	for (int i = 0; i < sample_num; i++)
+	tVector root_pos0 = mChar->GetRootPos();
+	tVector curr_pos = root_pos0;
+	tVector left_corner = root_pos0;
+	left_corner[0] = left_corner[0] - backward_extension;
+	left_corner[2] = left_corner[2] - square_width * 0.5;
+	for (int i = 0; i < map_size; i++)
 	{
-		curr_pos[0] += sample_step;
-		curr_height = mGround->SampleHeight(curr_pos);
-		map(i) = curr_height;
+	    for (int j = 0; j < map_size; j++)
+	    {
+            curr_pos[0] = left_corner[0] + i*grid_size;
+            curr_pos[2] = left_corner[2] + j*grid_size;
+            curr_height = mGround->SampleHeight(curr_pos);
+            map(map_index) = curr_height;
+            map_index = map_index + 1;
+        }
 	}
 }
+
+// 1D height map, revised @ Yan, perform not good
+//void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
+//{
+//	double sample_step = sample_span / sample_num;
+//	double curr_height = 0;
+//	map = Eigen::VectorXd::Zero(GetStateMapSize());
+//	tVector curr_pos = mChar->GetRootPos();
+//	for (int i = 0; i < sample_num; i++)
+//	{
+//		curr_pos[0] += sample_step;
+//		curr_height = mGround->SampleHeight(curr_pos);
+//		map(i) = curr_height;
+//	}
+//}

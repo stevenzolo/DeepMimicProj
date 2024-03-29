@@ -366,6 +366,7 @@ void cGroundVar3D::InitSlabs(const tVector& bound_min, const tVector& bound_max)
 
 	tVector mid = 0.5 * (bound_max + bound_min);
 	double w = mParams.mGroundWidth;
+	mSlabOffset = mid;
     
 	for (int s = 0; s < gNumSlabs; ++s)
 	{
@@ -460,7 +461,7 @@ void cGroundVar3D::BuildSlabHeighData(const tVector& bound_min, const tVector& b
 void cGroundVar3D::BuildSlabHeighData(int s, const tVector& bound_min, const tVector& bound_max,
 	std::vector<float>& out_data, std::vector<int>& out_flags)
 {
-	(*mOverTerrainFunc)(s, GetVertSpacingX(), GetVertSpacingZ(), bound_min, bound_max,
+	(*mOverTerrainFunc)(s, mSlabOffset, GetVertSpacingX(), GetVertSpacingZ(), bound_min, bound_max,
 		mBlendParams, mRand, out_data, out_flags);
 }
 

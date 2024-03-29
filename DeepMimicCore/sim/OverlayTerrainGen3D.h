@@ -44,17 +44,17 @@ public:
 	static void ParseType(const std::string& str, eType& out_type);
 
 	typedef void(*tOverTerrainFunc)(
-		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
+		int s, tVector slab_offset, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
 		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
 		);
 	static tOverTerrainFunc GetTerrainFunc(cGround::eType terrain_type);
 
 	static void BuildDefaultDemo(
-		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
+		int s, tVector slab_offset, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
 		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
 	);
 	static void BuildRover(
-		int s, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
+		int s, tVector slab_offset, double spacing_x, double spacing_z, const tVector& bound_min, const tVector& bound_max,
 		const Eigen::VectorXd& params, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags
 	);
 
