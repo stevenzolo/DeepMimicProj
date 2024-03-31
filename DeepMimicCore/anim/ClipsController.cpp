@@ -162,7 +162,7 @@ bool cClipsController::LoadMotions(const Json::Value& json)
 		int num_files = json.size();
 		mMotions.reserve(num_files);
 
-		for (int i = 0; i < num_files; ++i)
+		for (int i = 0; i < num_files; ++i)	// num_files
 		{
 			Json::Value entry_json = json.get(i, 0);
 			std::string curr_file = entry_json.get(gFileKey, "").asString();

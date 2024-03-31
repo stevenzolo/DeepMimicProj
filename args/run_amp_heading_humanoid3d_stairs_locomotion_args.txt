@@ -33,4 +33,4 @@
 --agent_files data/agents/ct_agent_humanoid_amp_tasks.txt
 --train_agents false
 
---model_files data/policies/humanoid3d_amp_new/amp_heading_stairs3d_t8400.ckpt
+--model_files data/policies/humanoid3d_amp_new/humanoid3d_amp_heading_stairs3d_12k_22m_square.ckpt

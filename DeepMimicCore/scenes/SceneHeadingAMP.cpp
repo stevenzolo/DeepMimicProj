@@ -114,7 +114,7 @@ double cSceneHeadingAMP::UpdateHeadingToTurnPoint()
 	{
 		turn_point_pos = tVector(0.875, 0, 0.875, 0);
 	}
-	else { assert(false); }
+	//else { assert(false); }
 
 	tVector delta = turn_point_pos - root_pos;
 	double heading_dir = std::atan2(-delta[2], delta[0]);

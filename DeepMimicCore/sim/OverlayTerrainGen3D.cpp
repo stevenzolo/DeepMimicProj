@@ -23,18 +23,16 @@ std::string gBuildTypeNames[cOverlayTerrainGen3D::eTypeMax] =
 const cOverlayTerrainGen3D::tParamDef cOverlayTerrainGen3D::gParamDefs[] =
 {
 	// the minimum value should be larger than cTerrainGen3D::gVertSpacing(0.2)
-	{ "BoxSpacing", 0.6 },	// space between the plane and other terrains
-	{ "NarrowWidth", 0.6 },	// allow character cross over, less than max step length of man (~0.8)
-	{ "GapDepth", -1.0},	// depth for gap/pit
-	{ "WallHeight", 1.0},	// used in wall/landing, allow character climb up
-	{ "BeamHeight", 0.3},	// used in beam, allow character jump up
-	{ "BeamSpacing", 0.6},	// narrow, < 2 * foot width
-	{ "SlopeRatio", 0.5},	// ratio of height/width, positive slope means up-then-down, while neg for down-up
-	{ "SlopeHeight", 7.0},	
-	{ "StairSpacing", 0.6},	
-	{ "StairIncease", -0.3},	// positive increase means up-then-down, while neg for down-up
-	{ "StairHeight", 3.0},
-	{ "PlateauHeight", 3.0}
+	{ "BoxSpacing", 1 },	// space between the plane and other terrains
+	{ "NarrowWidth", 0.1 },	// allow character cross over, less than max step length of man (~0.8)
+	{ "GapDepth", -2 },	// depth for gap/pit
+	{ "WallHeight", 0.5 },	// used in wall/landing, allow character climb up
+	{ "BeamHeight", 0.2 },	// used in beam, allow character jump up
+	{ "BeamSpacing", 0.6 },	// narrow, < 2 * foot width
+	{ "SlopeRatio", 0.3 },	// ratio of height/width, positive slope means up-then-down, while neg for down-up
+	{ "StairSpacing", 0.7 },	
+	{ "StairIncease", -0.2 },	// positive increase means up-then-down, while neg for down-up
+	{ "PlateauHeight", 3.0 }
 };
 
 void cOverlayTerrainGen3D::GetDefaultParams(Eigen::VectorXd& out_params)
@@ -452,7 +450,6 @@ void cOverlayTerrainGen3D::oBuildSlopes(
 	std::vector<float>& out_data, std::vector<int>& out_flags)
 {
 	const float slope_ratio = mOverBlendParams[eOverSlopeRatio];
-	const float slope_height = mOverBlendParams[eOverSlopeHeight];
 	double terrain_start_h = mOverBlendParams[eOverPlateauHeight];
 
 	tVector global_ground_size = global_bound_max - global_bound_min;
@@ -461,18 +458,10 @@ void cOverlayTerrainGen3D::oBuildSlopes(
 	out_res[1] = CalcResZ(global_ground_size[2], spacing_z);
 	tVector overlay_ground_size = overlay_bound_max - overlay_bound_min;
 
-	float slope_width = std::abs(slope_height / slope_ratio);
-	if (point_dir[0] == 1 && !(overlay_ground_size[0] > slope_width * 2.5))	// additional 0.5 * width for landing 
-	{
-		// Decrease slope height to save width for landing
-		slope_width = overlay_ground_size[0] / 2.5;
-	}
-	else if (point_dir[1] == 1 && !(overlay_ground_size[2] > slope_width * 2.5))
-	{
-		// Decrease slope height to save width for landing
-		slope_width = overlay_ground_size[2] / 2.5;
-	}
-
+	// additional 0.5 * width for landing
+	float slope_width = 0;
+	if (point_dir[0] == 1) { slope_width = overlay_ground_size[0] / 2.5; }
+	else { slope_width = overlay_ground_size[2] / 2.5; }
 
 	Eigen::Vector2i start_coord = Eigen::Vector2i::Zero();
 	start_coord[0] = CalcResX(std::abs(overlay_bound_min[0] - global_bound_min[0]), spacing_x);
@@ -486,7 +475,6 @@ void cOverlayTerrainGen3D::oBuildSlopes(
 	double slope_end_depth = 0;
 	if (point_dir[0] == 1) { slope_end_depth = terrain_start_h + box_size[2] * slope_ratio; }
 	else { slope_end_depth = terrain_start_h + box_size[0] * slope_ratio; }
-
 
 	if (point_dir[0] == 1) { overlay_bound_min[0] += slope_width; }
 	else { overlay_bound_min[2] += slope_width; }
@@ -514,7 +502,6 @@ void cOverlayTerrainGen3D::oBuildStairs(
 {
 	const float stair_spacing = mOverBlendParams[eOverStairSpacing];
 	const float stair_increase = mOverBlendParams[eOverStairIncease];
-	const float stair_total_increase = mOverBlendParams[eOverStairHeight];
 	double terrain_start_h = mOverBlendParams[eOverPlateauHeight];
 
 	tVector global_ground_size = global_bound_max - global_bound_min;
@@ -523,16 +510,10 @@ void cOverlayTerrainGen3D::oBuildStairs(
 	out_res[1] = CalcResZ(global_ground_size[2], spacing_z);
 	tVector overlay_ground_size = overlay_bound_max - overlay_bound_min;
 
-	float stair_width = std::abs(stair_spacing * stair_total_increase / stair_increase);
-	if (point_dir[0] == 1 && !(overlay_ground_size[0] > stair_width * 2.5))		// additional 0.5 * width for landing 
-	{
-		// Decrease stair width to save width for landing
-		stair_width = overlay_ground_size[0] / 2.5;
-	}
-	else if (point_dir[1] == 1 && !(overlay_ground_size[2] > stair_width * 2.5))
-	{
-		stair_width = overlay_ground_size[2] / 2.5;
-	}
+	// additional 0.5 * width for landing
+	float stair_width = 0;
+	if (point_dir[0] == 1) { stair_width = overlay_ground_size[0] / 2.5; }
+	else { stair_width = overlay_ground_size[2] / 2.5; }
 
 	Eigen::Vector2i start_coord = Eigen::Vector2i::Zero();
 	start_coord[0] = CalcResX(std::abs(overlay_bound_min[0] - global_bound_min[0]), spacing_x);
@@ -580,12 +561,9 @@ void cOverlayTerrainGen3D::oBuildSlopeStair(
 	std::vector<float>& out_data, std::vector<int>& out_flags)
 {
 	const float slope_ratio = mOverBlendParams[eOverSlopeRatio];
-	float slope_height = mOverBlendParams[eOverSlopeHeight];
 	const float stair_spacing = mOverBlendParams[eOverStairSpacing];
 	float stair_increase = mOverBlendParams[eOverStairIncease];
-	float stair_height = mOverBlendParams[eOverStairHeight];
 	double terrain_start_h = mOverBlendParams[eOverPlateauHeight];
-	stair_height = (slope_height != stair_height) ? slope_height : stair_height;
 
 	tVector global_ground_size = global_bound_max - global_bound_min;
 	Eigen::Vector2i out_res = Eigen::Vector2i::Zero();
@@ -593,23 +571,23 @@ void cOverlayTerrainGen3D::oBuildSlopeStair(
 	out_res[1] = CalcResZ(global_ground_size[2], spacing_z);
 	tVector overlay_ground_size = overlay_bound_max - overlay_bound_min;
 
-	float stair_width = std::abs(stair_spacing * stair_height / stair_increase);	// eq.(1)
-	float slope_width = std::abs(slope_height / slope_ratio);	// eq.(2)
-	if (point_dir[0] == 1 && !(overlay_ground_size[0] > (stair_width * 1.5 + slope_width)))	// additional 0.5 * width for landing 
+	// adjust stair and slope width by adjusting stair/slope height, to save the landing space
+	// stair_width + slope_width = size * 2.0 / 2.5; another 0.5 for landing.
+	float stair_width = 0;
+	float slope_width = 0;
+	if (point_dir[0] == 1)
 	{
-		// adjust stair and slope width by adjusting stair/slope height, to save the landing space
-		// eq.£¨1£©+ eq.(2) = size * 2.0 / 2.5; another 0.5 for landing.
-		slope_height = (overlay_ground_size[0] * 2.0 / 2.5) / (
+		float slope_height = (overlay_ground_size[0] * 2.0 / 2.5) / (
 			std::abs(stair_spacing / stair_increase) + std::abs(1 / slope_ratio));
-		stair_height = slope_height;
+		float stair_height = slope_height;
 		stair_width = std::abs(stair_spacing * stair_height / stair_increase);
 		slope_width = std::abs(slope_height / slope_ratio);
 	}
-	else if (point_dir[1] == 1 && !(overlay_ground_size[2] > (stair_width * 1.5 + slope_width)))
+	else	// point_dir[1] == 1
 	{
-		slope_height = (overlay_ground_size[2] * 2.0 / 2.5) / (
+		float slope_height = (overlay_ground_size[2] * 2.0 / 2.5) / (
 			std::abs(stair_spacing / stair_increase) + std::abs(1 / slope_ratio));
-		stair_height = slope_height;
+		float stair_height = slope_height;
 		stair_width = std::abs(stair_spacing * stair_height / stair_increase);
 		slope_width = std::abs(slope_height / slope_ratio);
 	}
@@ -662,12 +640,9 @@ void cOverlayTerrainGen3D::oBuildStairSlope(
 	std::vector<float>& out_data, std::vector<int>& out_flags)
 {
 	float slope_ratio = mOverBlendParams[eOverSlopeRatio];
-	float slope_height = mOverBlendParams[eOverSlopeHeight];
 	const float stair_spacing = mOverBlendParams[eOverStairSpacing];
 	const float stair_increase = mOverBlendParams[eOverStairIncease];
-	float stair_height = mOverBlendParams[eOverStairHeight];
 	double terrain_start_h = mOverBlendParams[eOverPlateauHeight];
-	slope_height = (slope_height != stair_height) ? stair_height : slope_height;
 
 	tVector global_ground_size = global_bound_max - global_bound_min;
 	Eigen::Vector2i out_res = Eigen::Vector2i::Zero();
@@ -675,28 +650,27 @@ void cOverlayTerrainGen3D::oBuildStairSlope(
 	out_res[1] = CalcResZ(global_ground_size[2], spacing_z);
 	tVector overlay_ground_size = overlay_bound_max - overlay_bound_min;
 
-	float stair_width = std::abs(stair_spacing * stair_height / stair_increase);	// eq.£¨1£©
-	float slope_width = std::abs(slope_height / slope_ratio);	// eq.£¨2£©
-	if (point_dir[0] == 1 && !(overlay_ground_size[0] > (slope_width * 1.5 + stair_width)))	// additional 0.5 * width for landing 
+	// adjust stair and slope width by adjusting stair/slope height, to save the landing space
+	// stair_width + slope_width = size * 2.0 / 2.5; another 0.5 for landing.
+	float stair_width = 0;
+	float slope_width = 0;
+	if (point_dir[0] == 1)
 	{
-		// adjust stair and slope width by adjusting stair/slope height, to save the landing space
-		// eq.£¨1£©+ eq.(2) = size * 2.0 / 2.5; another 0.5 for landing.
-		slope_height = (overlay_ground_size[0] * 2.0 / 2.5) / (
+		float slope_height = (overlay_ground_size[0] * 2.0 / 2.5) / (
 			std::abs(stair_spacing / stair_increase) + std::abs(1 / slope_ratio));
-		stair_height = slope_height;
+		float stair_height = slope_height;
 		stair_width = std::abs(stair_spacing * stair_height / stair_increase);
 		slope_width = std::abs(slope_height / slope_ratio);
 	}
-	if (point_dir[1] == 1 && !(overlay_ground_size[2] > (slope_width * 1.5 + stair_width)))	
+	else
 	{
-		// adjust stair and slope width by adjusting stair/slope height, to save the landing space
-		// eq.£¨1£©+ eq.(2) = size * 2.0 / 2.5; another 0.5 for landing.
-		slope_height = (overlay_ground_size[2] * 2.0 / 2.5) / (
+		float slope_height = (overlay_ground_size[2] * 2.0 / 2.5) / (
 			std::abs(stair_spacing / stair_increase) + std::abs(1 / slope_ratio));
-		stair_height = slope_height;
+		float stair_height = slope_height;
 		stair_width = std::abs(stair_spacing * stair_height / stair_increase);
 		slope_width = std::abs(slope_height / slope_ratio);
 	}
+
 
 	if (!(slope_ratio * stair_increase < 0))
 	{

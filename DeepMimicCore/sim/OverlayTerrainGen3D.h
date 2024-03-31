@@ -31,10 +31,8 @@ public:
 		eOverBeamHeight,
 		eOverBeamSpacing,
 		eOverSlopeRatio,
-		eOverSlopeHeight,
 		eOverStairSpacing,
 		eOverStairIncease,
-		eOverStairHeight,
 		eOverPlateauHeight,
 		eOverParamsMax
 	};

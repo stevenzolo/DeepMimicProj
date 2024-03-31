@@ -386,9 +386,10 @@ int cDeepMimicCharController::GetStateMapSize() const
     return 1024;
 }
 
+// 11*11 map
+
 //void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 //{
-//    // printf("Height map is building in C \n");
 //	int map_index = 0;
 //	int map_size = 32;
 //	int right_foot_id = 5;
@@ -416,9 +417,10 @@ int cDeepMimicCharController::GetStateMapSize() const
 //	}
 //}
 
+// 3.5*3.5 map
+
 void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 {
-    // printf("Height map is building in C \n");
 	int map_index = 0;
 	int map_size = 32;
 	double backward_extension = 0.5;
@@ -445,7 +447,8 @@ void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 	}
 }
 
-// 1D height map, revised @ Yan, perform not good
+// 1D height map (10), revised @ Yan, perform not good
+
 //void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 //{
 //	double sample_step = sample_span / sample_num;
@@ -456,6 +459,6 @@ void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 //	{
 //		curr_pos[0] += sample_step;
 //		curr_height = mGround->SampleHeight(curr_pos);
-//		map(i) = curr_height;
+//		map(i) = 0;	//curr_height
 //	}
 //}
