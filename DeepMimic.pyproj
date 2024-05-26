@@ -14,7 +14,7 @@
     <Name>DeepMimic</Name>
     <RootNamespace>pyTerrainRL</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>--arg_file args/train_amp_heading_humanoid3d_locomotion_args.txt</CommandLineArguments>
+    <CommandLineArguments>--arg_file args/train_amp_heading_humanoid3d_locomotion_args.txt --num_workers 4</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
     <InterpreterId>CondaEnv|CondaEnv|deepmimic</InterpreterId>
