@@ -200,8 +200,8 @@ std::string cSceneHeadingAMP::GetName() const
 
 void cSceneHeadingAMP::UpdateTargetHeading()
 {
-	//double new_heading = GetTargetHeading();
-	double new_heading = UpdateHeadingToTurnPoint();
+	double new_heading = GetTargetHeading();
+	//double new_heading = UpdateHeadingToTurnPoint();
 
 	if (EnableTargetPos())
 	{

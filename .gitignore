@@ -19,6 +19,7 @@
 
 
 .vs/
+.idea/
 __pycache__/
 output/
 x64/

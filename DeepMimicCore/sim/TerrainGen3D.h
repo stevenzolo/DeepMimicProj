@@ -45,6 +45,9 @@ public:
 		eParamsConveyorSpacing,
         eParamsStepSpacingMin,
         eParamsStepSpacingMax,
+		eParamsGapSpacing,
+		eParamsGapWidth,
+		eParamsGapHeight,
 		eParamsMax
 	};
 
@@ -85,6 +88,10 @@ public:
 			const Eigen::VectorXd& params, cRand& rand,
 			std::vector<float>& out_data, std::vector<int>& out_flags);
 
+	static void BuildSlopesGaps(const tVector& origin, const tVector& ground_size, double spacing_x, double spacing_z,
+		const Eigen::VectorXd& params, cRand& rand,
+		std::vector<float>& out_data, std::vector<int>& out_flags);
+
 
 protected:
 
@@ -104,4 +111,12 @@ protected:
 	static void AddStairs(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
 			double spacing_min, double spacing_max, double step_h_min, double step_h_max,
 			const Eigen::Vector2i& out_res, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags);
+
+	static void AddGaps(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z,
+		double gap_spacing, double gap_width, double gap_height,
+		const Eigen::Vector2i& out_res, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags);
+
+	static void OverlaySlope(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x,
+		double spacing_z, double slope,
+		const Eigen::Vector2i& out_res, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags);
 };

@@ -26,14 +26,18 @@ const cTerrainGen3D::tParamDef cTerrainGen3D::gParamDefs[] =
 	{ "ObstacleSpeed0", 0.1 },
 	{ "ObstacleSpeed1", 2 },
 	{ "ObstacleSpeedLerpPow", 1 },
-	{ "Slope", 0 },
+	{ "Slope", 0.25 },
 	{ "ConveyorStripLength", 10 },
 	{ "ConveyorNumStrips", 4 },
 	{ "ConveyorNumSlices", 10 },
 	{ "ConveyorSpacing", 3 },
     
 	{"StepSpacingMin", 1},
-	{"StepSpacingMax", 2}
+	{"StepSpacingMax", 2},
+
+	{"eParamsGapSpacing", 2},
+	{"eParamsGapWidth", 0.2},
+	{"eParamsGapHeight", -2}
 };
 
 void cTerrainGen3D::GetDefaultParams(Eigen::VectorXd& out_params)
@@ -93,6 +97,8 @@ cTerrainGen3D::tTerrainFunc cTerrainGen3D::GetTerrainFunc(cGround::eType terrain
 		return BuildCheckers;
     case cGround::eTypeVar3DStairs:
 		return BuildStairs;
+	case cGround::eTypeVar3DSlopesGaps:
+		return BuildSlopesGaps;
 	default:
 		printf("Unsupported ground var3d type.\n");
 		assert(false);
@@ -176,6 +182,24 @@ void cTerrainGen3D::BuildStairs(const tVector& origin, const tVector& ground_siz
 	out_res[0] = CalcResX(ground_size[0], spacing_x);
 	out_res[1] = CalcResZ(ground_size[2], spacing_z);
 	return AddStairs(origin, start_coord, ground_size, spacing_x, spacing_z, spacing_min, spacing_max, step_h_min, step_h_max,  out_res, rand, out_data, out_flags);
+}
+
+void cTerrainGen3D::BuildSlopesGaps(const tVector& origin, const tVector& ground_size, double spacing_x, double spacing_z
+	, const Eigen::VectorXd& params, cRand& rand,
+	std::vector<float>& out_data, std::vector<int>& out_flags)
+{
+	double gap_spacing = params[eParamsGapSpacing];
+	double gap_width = params[eParamsGapWidth];
+	double gap_height = params[eParamsGapHeight];
+	double slope = params[eParamsSlope];
+
+	Eigen::Vector2i start_coord = Eigen::Vector2i::Zero();
+	Eigen::Vector2i out_res = Eigen::Vector2i::Zero();
+	out_res[0] = CalcResX(ground_size[0], spacing_x);
+	out_res[1] = CalcResZ(ground_size[2], spacing_z);
+
+	AddGaps(origin, start_coord, ground_size, spacing_x, spacing_z, gap_spacing, gap_width, gap_height, out_res, rand, out_data, out_flags);
+	return OverlaySlope(origin, start_coord, ground_size, spacing_x, spacing_z, slope, out_res, rand, out_data, out_flags);
 }
 
 
@@ -475,9 +499,11 @@ void cTerrainGen3D::AddStairs(const tVector& origin, const Eigen::Vector2i& star
 			x = cMathUtil::Sign(x) * std::max(0.0, (std::abs(x) - pad));
 
 			// add stairs, i % num decide the width of the stairs
-			if (i % 8 == 0 && i > 50){
+			/*if (i % 8 == 0 && i > 50){
 				h += 0.15;
-			}
+			}*/
+
+			if (i % 20 == 0 && i > 50) { h += 0.15; }
 
 			// add gaps
 			double temp_h = h;
@@ -490,6 +516,84 @@ void cTerrainGen3D::AddStairs(const tVector& origin, const Eigen::Vector2i& star
 			out_flags[idx] = curr_flags;
 
 			h = temp_h;
+		}
+	}
+}
+
+void cTerrainGen3D::AddGaps(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, double spacing_z
+	, double gap_spacing, double gap_width, double gap_height, 
+	const Eigen::Vector2i& out_res, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags)
+{
+	const double pad = 1;
+
+	int res_x = CalcResX(size[0], spacing_x);
+	int res_z = CalcResX(size[2], spacing_z);
+	int num_verts = res_x * res_z;
+
+	double randomness = rand.RandDouble();
+
+	for (int j = 0; j < res_z; ++j)
+	{
+		double z = origin[2] + (j / (res_z - 1.0)) * size[2];
+		size_t coord_z = j + start_coord[1];
+
+		for (int i = 0; i < res_x; ++i)
+		{
+			double h = 0;
+
+			size_t coord_x = i + start_coord[0];
+			size_t idx = coord_z * out_res[0] + coord_x;
+
+			double x = origin[0] + (i / (res_x - 1.0)) * size[0];
+
+			x = cMathUtil::Sign(x) * std::max(0.0, (std::abs(x) - pad));
+
+			int temp_fold = static_cast<int>(x / gap_spacing);
+			if (temp_fold != 0 && std::abs(x - gap_spacing * temp_fold) < 0.5 * gap_width)
+			{
+				h = gap_height;
+			}
+			int curr_flags = 1 << eVertFlagEnableTex;
+			out_data[idx] = h;
+			out_flags[idx] = curr_flags;
+		}
+	}
+}
+
+void cTerrainGen3D::OverlaySlope(const tVector& origin, const Eigen::Vector2i& start_coord, const tVector& size, double spacing_x, 
+	double spacing_z, double slope,
+	const Eigen::Vector2i& out_res, cRand& rand, std::vector<float>& out_data, std::vector<int>& out_flags)
+{
+	const double pad = 1;
+
+	int res_x = CalcResX(size[0], spacing_x);
+	int res_z = CalcResX(size[2], spacing_z);
+	int num_verts = res_x * res_z;
+
+	double randomness = rand.RandDouble();
+
+	for (int j = 0; j < res_z; ++j)
+	{
+		double z = origin[2] + (j / (res_z - 1.0)) * size[2];
+		size_t coord_z = j + start_coord[1];
+
+		// the last number (*0.1) decide the increase of height relative to the increase of width
+		double delta_h = (std::floor(origin[0])) * slope;
+		double end_h = std::floor(origin[0] + size[0]) * slope;
+		for (int i = 0; i < res_x; ++i)
+		{
+			size_t coord_x = i + start_coord[0];
+			size_t idx = coord_z * out_res[0] + coord_x;
+
+			//double x = origin[0] + (i / (res_x - 1.0)) * size[0];
+			//x = cMathUtil::Sign(x) * std::max(0.0, (std::abs(x) - pad));
+
+			int curr_flags = 1 << eVertFlagEnableTex;
+			out_data[idx] += static_cast<float>(delta_h);
+			out_flags[idx] = curr_flags;
+
+			delta_h += spacing_x * slope;
+			delta_h = delta_h > end_h ? end_h : delta_h;
 		}
 	}
 }

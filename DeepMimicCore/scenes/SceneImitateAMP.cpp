@@ -156,8 +156,9 @@ void cSceneImitateAMP::RecordAMPObsAgent(int agent_id, Eigen::VectorXd& out_data
     printf("COM velocity: %.5f %.5f %.5f\n", com_vel[0], com_vel[1], com_vel[2]);*/
 	
 	// output data
-    /*std::ofstream out;
-    out.open("output_data/AMP_ramp_1.txt", std::ios::app);
+	/*int num_joints = character->GetNumJoints();
+    std::ofstream out;
+    out.open("broadcast_data/AMP_ramp_1.txt", std::ios::app);
     if (out.is_open())
     {
         for (int i = 0; i < pose.size(); ++i)

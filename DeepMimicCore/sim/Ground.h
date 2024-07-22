@@ -53,6 +53,7 @@ public:
 		eTypeConveyor3D,
 		eTypeVar3DCheckers,
 		eTypeVar3DStairs,
+		eTypeVar3DSlopesGaps,	// added
 		eTypeOverlay3DDemo,		// added
 		eTypeOverlay3DRover,		// added
 		eTypeCombined3DTerrains,	// added

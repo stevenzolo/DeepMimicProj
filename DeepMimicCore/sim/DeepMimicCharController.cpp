@@ -388,52 +388,30 @@ int cDeepMimicCharController::GetStateMapSize() const
 
 // 11*11 map
 
-//void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
-//{
-//	int map_index = 0;
-//	int map_size = 32;
-//	int right_foot_id = 5;
-//	int left_foot_id = 11;
-//	double half_length = 11;
-//	double grid_size = 2*half_length/(map_size - 1);
-//	double curr_height = 0;
-//	map = Eigen::VectorXd::Zero(GetStateMapSize());
-//	tVector root_pos0 = mChar->GetRootPos();
-//	tVector curr_pos = root_pos0;
-//	tVector left_corner = root_pos0;
-//	left_corner[0] = left_corner[0] - half_length;
-//	left_corner[2] = left_corner[2] - half_length;
-//	for (int i = 0; i < map_size; i++)
-//	{
-//	    for (int j = 0; j < map_size; j++)
-//	    {
-//            curr_pos[0] = left_corner[0] + i*grid_size;
-//            curr_pos[2] = left_corner[2] + j*grid_size;
-//            curr_height = mGround->SampleHeight(curr_pos);
-//            map(map_index) = curr_height;
-//            // printf("point (%d, %d) at position (%.5f, %.5f) with height: %.5f\n", i, j, curr_pos[0], curr_pos[2], map(map_index));
-//            map_index = map_index + 1;
-//        }
-//	}
-//}
-
-// 3.5*3.5 map
-
 void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 {
 	int map_index = 0;
 	int map_size = 32;
-	double backward_extension = 0.5;
-	double forward_extension = 3.0;
-	double square_width = backward_extension + forward_extension;
-	double grid_size = square_width / (map_size - 1);
+	int right_foot_id = 5;
+	int left_foot_id = 11;
+	double half_length = 11;
+	double grid_size = 2*half_length/(map_size - 1);
 	double curr_height = 0;
 	map = Eigen::VectorXd::Zero(GetStateMapSize());
 	tVector root_pos0 = mChar->GetRootPos();
 	tVector curr_pos = root_pos0;
+
+	//// for var2d shape, the same height is arranged widely across curr_pos[2] direction.
+	//printf("Current root position (%.5f, %.5f) with height: %.5f\n", curr_pos[0], curr_pos[2] + 20, mGround->SampleHeight(curr_pos));
+	//printf("Current root position (%.5f, %.5f) with height: %.5f\n", curr_pos[0], curr_pos[2] + 50, mGround->SampleHeight(curr_pos));
+	//printf("Current root position (%.5f, %.5f) with height: %.5f\n", curr_pos[0], curr_pos[2] + 100, mGround->SampleHeight(curr_pos));
+	//printf("Current root position (%.5f, %.5f) with height: %.5f\n", curr_pos[0], curr_pos[2] + 200, mGround->SampleHeight(curr_pos));
+	//printf("Current root position (%.5f, %.5f) with height: %.5f\n", curr_pos[0], curr_pos[2] + 1000, mGround->SampleHeight(curr_pos));
+	//printf("Current root position (%.5f, %.5f) with height: %.5f\n", curr_pos[0], curr_pos[2] + 2000, mGround->SampleHeight(curr_pos));
+
 	tVector left_corner = root_pos0;
-	left_corner[0] = left_corner[0] - backward_extension;
-	left_corner[2] = left_corner[2] - square_width * 0.5;
+	left_corner[0] = left_corner[0] - half_length;
+	left_corner[2] = left_corner[2] - half_length;
 	for (int i = 0; i < map_size; i++)
 	{
 	    for (int j = 0; j < map_size; j++)
@@ -442,10 +420,41 @@ void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
             curr_pos[2] = left_corner[2] + j*grid_size;
             curr_height = mGround->SampleHeight(curr_pos);
             map(map_index) = curr_height;
+            //printf("point (%d, %d) at position (%.5f, %.5f) with height: %.5f\n", i, j, curr_pos[0], curr_pos[2], map(map_index));
             map_index = map_index + 1;
         }
 	}
 }
+
+// 3.5*3.5 map
+
+//void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
+//{
+//	int map_index = 0;
+//	int map_size = 32;
+//	double backward_extension = 0.5;
+//	double forward_extension = 3.0;
+//	double square_width = backward_extension + forward_extension;
+//	double grid_size = square_width / (map_size - 1);
+//	double curr_height = 0;
+//	map = Eigen::VectorXd::Zero(GetStateMapSize());
+//	tVector root_pos0 = mChar->GetRootPos();
+//	tVector curr_pos = root_pos0;
+//	tVector left_corner = root_pos0;
+//	left_corner[0] = left_corner[0] - backward_extension;
+//	left_corner[2] = left_corner[2] - square_width * 0.5;
+//	for (int i = 0; i < map_size; i++)
+//	{
+//	    for (int j = 0; j < map_size; j++)
+//	    {
+//            curr_pos[0] = left_corner[0] + i*grid_size;
+//            curr_pos[2] = left_corner[2] + j*grid_size;
+//            curr_height = mGround->SampleHeight(curr_pos);
+//            map(map_index) = curr_height;
+//            map_index = map_index + 1;
+//        }
+//	}
+//}
 
 // 1D height map (10), revised @ Yan, perform not good
 
@@ -459,6 +468,6 @@ void cDeepMimicCharController::BuildHeightMap(Eigen::VectorXd& map) const
 //	{
 //		curr_pos[0] += sample_step;
 //		curr_height = mGround->SampleHeight(curr_pos);
-//		map(i) = 0;	//curr_height
+//		map(i) = curr_height;	//curr_height, 0
 //	}
 //}
